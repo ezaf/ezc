@@ -25,20 +25,20 @@
 ###############################################################################
 
 # Name for your shared library code.
-LIB_NAME = ezhello
+LIB_NAME = ezc
 
 # Directories within /src of your library code.
 # Code in these subdirectories are meant to be shared among all apps and tests.
-SRC_SUBDIRS = EzHello
+SRC_SUBDIRS = EzC
 
 # Directories within /src of the apps and tests that you want to build.
-MAIN_SUBDIRS = test_hello main_hellochat #test_glfw
+MAIN_SUBDIRS =
 
 # Name of the application(s) you want to test when you call `make test`.
-TEST = test_hello main_hellochat
+TEST =
 
 # Name of the application (singular!) you want to run when you call `make run`.
-RUN = main_hellochat
+RUN =
 
 # Packages that you want to include in your project.
 # If `pkg-config` cannot find the package, `-I$(PREFIX)/include/$(PKG)` and

@@ -1,3 +1,3 @@
-# EzMake
+# EzC
 
-IDE-like power inside a humble makefile.
+Utilities and design patterns written in pure C.

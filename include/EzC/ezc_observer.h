@@ -1,7 +1,6 @@
-/** @file       test_hello.c
- *  @brief      An example of how to create unit tests.
- *  @details    TODO: Document this on a page within the "pages" tab.
- *
+/** @file       EzC/ezc_observer.h
+ *  @brief      Observer design pattern using a linked list.
+ *  
  *  <!-------------------------------------------------------------------------
  *  Copyright (c) 2018 Kirk Lange <github.com/kirklange>
  *  
@@ -23,13 +22,46 @@
  *  -------------------------------------------------------------------------->
  */
 
-#include "EzHello/ezhello.h"
+#if 0
 
+#ifndef EZC_OBSERVER_H
+#define EZC_OBSERVER_H
 
-
-int main(int argc, char *argv[])
+#ifdef __cplusplus
+extern "C"
 {
-    ezhello_printHelloTo("EzAF developers");
-    return 0;
-}
+#endif
 
+
+
+#include <stdint.h>
+
+
+
+typedef struct ezc_observer
+{
+    struct ezc_observer     *next;
+    void                   (*notify)(void*);
+    void                    *data;
+}
+ezc_observer;
+
+
+
+ezc_observer*       ezc_observer_new();
+uint8_t             ezc_observer_del(ezc_observer **head);
+
+uint8_t             ezc_observer_notifyAll(ezc_observer *head);
+ezc_observer*       ezc_observer_add(ezc_observer *head, void (*notify)(void*),
+                                     void *data);
+uint8_t             ezc_observer_remove(ezc_observer *node);
+
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* EZC_OBSERVER_H */
+
+#endif

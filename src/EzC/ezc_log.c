@@ -1,7 +1,5 @@
-/** @file       ezhello.h
- *  @brief      A simple demonstration of how to write, document and include
- *              header files in EzMake.
- *  
+/*  ezc_log.c
+ *
  *  <!-------------------------------------------------------------------------
  *  Copyright (c) 2018 Kirk Lange <github.com/kirklange>
  *  
@@ -23,28 +21,41 @@
  *  -------------------------------------------------------------------------->
  */
 
-#ifndef EZHELLO_H
-#define EZHELLO_H
+#if 0
 
-#ifdef __cplusplus
-extern "C"
+#include "EzC/ezc_log.h"
+
+#include <stdarg.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
+
+
+void ezc_log(ezc_log_t severity, const char *callee, const char *message, ...)
 {
-#endif
+    if (EZC_LOG_VERBOSITY >= severity)
+    {
+        /* Allocate output buffer of necessary size */
+        char output[ (strlen(callee)+strlen(message))+8 ];
 
+        char severitystr[1];
+        severitystr[0] = (char) type;
 
+        /* Format it as "[severity] (callee) message" */
+        strcpy(output, "[");
+        strcat(output, severitystr);
+        strcat(output, "] (");
+        strcat(output, callee);
+        strcat(output, ") ");
+        strcat(output, message);
+        strcat(output, "\n");
 
-/**
- *  @brief      Say hello to whoever you want!
- *  @param      subject    String indicating to whom we are saying hello to.
- *  @return     `void`, what did you expect?
- *  @details    Concatenates `"Hello "`, the `subject` parameter, and `"!\n"`.
- */
-void ezhello_printHelloTo(const char *subject);
-
-
-
-#ifdef __cplusplus
+        /* Pass on any printf args */
+        va_list args;
+        va_start(args, message);
+        vfprintf(EZC_LOG_OUT, output, args);
+    }
 }
-#endif
 
-#endif /* EZHELLO_H */
+#endif
