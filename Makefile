@@ -29,7 +29,7 @@ LIB_NAME = ezc
 
 # Directories within /src of your library code.
 # Code in these subdirectories are meant to be shared among all apps and tests.
-SRC_SUBDIRS = EzC
+LIB_SUBDIR = EzC
 
 # Directories within /src of the apps and tests that you want to build.
 MAIN_SUBDIRS =
