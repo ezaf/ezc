@@ -34,7 +34,8 @@ extern C
 
 /** @def        EZC_STATUS
  *  @brief      Macro defining the `EZC_STATUS` type.
- *  @details    We can be frugal. All we need is to represent two states.
+ *  @details    This type is pretty frugal; all we need is to represent two
+ *              states.
  */
 #define EZC_STATUS unsigned char
 
