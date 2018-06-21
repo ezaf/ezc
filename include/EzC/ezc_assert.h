@@ -49,7 +49,7 @@ extern C
 
 
 /* Use the macro instead! */
-void ezc_assert(char const *expr, char const *file, unsigned int const line);
+void ezc_assert(char const *expr, char const *file, unsigned int line);
 
 
 
