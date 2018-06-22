@@ -38,23 +38,33 @@ extern C
  */
 typedef enum ezc_error_t
 {
-    ABORT,  /** Abort the program after logging this error. */
-    ERROR,  /** Continue the program after logging this error. */
-    WARN,   /** Continue the program, this is only a warning. */
-    INFO    /** Continue the program, this is just diagnostic information. */
+    /** Abort the program after logging this error. */
+    ABORT,
+
+    /** Continue the program after logging this error. */
+    ERROR,
+
+    /** Continue the program, this is only a warning. */
+    WARN,
+
+    /** Continue the program, this is just diagnostic information. */
+    INFO
 }
 ezc_error_t;
 
 
 
 /** @brief      Add a message to the global log.
- *  @details    This macro accepts variadic arguments `printf` style. Speaking
- *              of printing, messages are echoed upon being added to the log,
- *              either `stdout` or `stderr`, depending on the type.
+ *  @details    This macro accepts variadic arguments `printf` style. Messages
+ *              are echoed upon being added to the log, either `stdout` or
+ *              `stderr`, depending on the type.
  *  @param      severity    The message type, indicating whether the program
  *                          should abort or not.
- *              message     The message, followed by variadic arguments just
- *                          like `printf`.
+ *  @param      message     The message itself. Supports formatting like
+ *                          `printf`. It is assumed that the length of this
+ *                          string is at least a few dozen characters less than
+ *                          `INT_MAX`.
+ *  @param      ...         `printf` style variadic arguments.
  */
 #define EZC_ERROR(severity, message, ...) \
     (ezc_error(__FILE__, __LINE__, severity, message))
@@ -72,6 +82,7 @@ void            ezc_error(char const *file, unsigned int line,
  *              there have been no messages whatsoever.
  */
 char const*     ezc_error_get();
+
 
 
 /** @brief      Get the @a n most recent messages.

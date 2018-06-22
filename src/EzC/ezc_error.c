@@ -25,6 +25,32 @@
 
 #include "EzC/ezc_error.h"
 
+#include <limits.h>
+#include <string.h>
+
+
+
+static char *EZC_ERROR_LOG = NULL;
+static size_t EZC_ERROR_LOG_CAPACITY = 0;
+
+
+
+void ezc_error(char const *file, unsigned int line,
+               ezc_error_t severity, char const *message, ...)
+{
+    if (EZC_ERROR_LOG_CAPACITY < EZC_ERROR_LOG_CAPACITY + strlen(message))
+    {
+        if (EZC_ERROR_LOG_CAPACITY == 0)
+            EZC_ERROR_LOG_CAPACITY = INT_MAX;
+        else
+            EZC_ERROR_LOG_CAPACITY *= 2;
+
+        EZC_ERROR_LOG = (char*) realloc(EZC_ERROR_LOG_CAPACITY, sizeof(char));
+
+        /* Inelegant! We need a growable strings data structure. */
+    }
+}
+
 
 
 /* TODO: in ezc_error_add, seperate each error by something like
