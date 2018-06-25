@@ -32,24 +32,25 @@ extern C
 
 
 
-/** @brief      Macor for assertions when debugging.
- *  @details    Like normal assertions, `EZC_ASSERT` expands to an expression
- *              and can be toggled via `NDEBUG`. `EZC_ASSERT` will attempt to
+/** @brief      Macro for assertions when debugging.
+ *  @details    Like normal assertions, EzC's `assert` expands to an expression
+ *              and can be toggled via `NDEBUG`. `assert` will attempt to
  *              write to both `stderr` and a `*.assert` text file.
  *  @param      expr    Expression to test. As is standard, the assertion is
  *                      triggered when the expression evaluates to `0`.
  */
+#undef assert
 #ifdef NDEBUG
-#define EZC_ASSERT(expr) ((void)0)
+#define assert(expr) ((void)0)
 #else
-#define EZC_ASSERT(expr) \
-    ((void) ((expr) || (ezc_assert(expr, __FILE__, __LINE__), 0)))
+#define assert(expr) \
+    ((void) ((expr) || (ezc_assert(__FILE__, __LINE__, #expr), 0)))
 #endif
 
 
 
 /* Use the macro instead! */
-void ezc_assert(char const *expr, char const *file, unsigned int line);
+void ezc_assert(char const *file, unsigned int line, char const *expr);
 
 
 

@@ -29,7 +29,7 @@
 
 
 
-void ezc_assert(char const *expr, char const *file, unsigned int line)
+void ezc_assert(char const *file, unsigned int line, char const *expr)
 {
     time_t time_raw;
     time(&time_raw);
