@@ -1,6 +1,5 @@
 /*  ezc_assert.c
  *  
- *  <!-------------------------------------------------------------------------
  *  Copyright (c) 2018 Kirk Lange <github.com/kirklange>
  *  
  *  This software is provided 'as-is', without any express or implied
@@ -18,11 +17,10 @@
  *  2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
  *  3. This notice may not be removed or altered from any source distribution.
- *  -------------------------------------------------------------------------->
  */
 
 #include "EzC/ezc_assert.h"
-#include "EzC/ezc_len.h"
+#include "EzC/ezc_mem.h"
 
 #include <stdio.h>
 #include <time.h>

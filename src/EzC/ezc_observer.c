@@ -1,6 +1,5 @@
-/*  EzC/ezc_observer.c
+/*  ezc_observer.c
  *
- *  <!-------------------------------------------------------------------------
  *  Copyright (c) 2018 Kirk Lange <github.com/kirklange
  *  
  *  This software is provided 'as-is', without any express or implied
@@ -18,7 +17,6 @@
  *  2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
  *  3. This notice may not be removed or altered from any source distribution.
- *  -------------------------------------------------------------------------->
  */
 
 #if 0

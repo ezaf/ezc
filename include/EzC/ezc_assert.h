@@ -1,7 +1,5 @@
-/** @file       ezc_assert.h
- *  @brief      Macro for assertions when debugging.
+/*  ezc_assert.h
  *  
- *  <!-------------------------------------------------------------------------
  *  Copyright (c) 2018 Kirk Lange <github.com/kirklange>
  *  
  *  This software is provided 'as-is', without any express or implied
@@ -19,11 +17,14 @@
  *  2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
  *  3. This notice may not be removed or altered from any source distribution.
- *  -------------------------------------------------------------------------->
  */
 
 #ifndef EZC_ASSERT_H
 #define EZC_ASSERT_H
+
+/** @file       ezc_assert.h
+ *  @brief      Macro for assertions when debugging.
+ */
 
 #ifdef __cplusplus
 extern C
@@ -32,7 +33,8 @@ extern C
 
 
 
-/** @brief      Macro for assertions when debugging.
+/** @def        assert(expr)
+ *  @brief      Macro for assertions when debugging.
  *  @details    Like normal assertions, EzC's `assert` expands to an expression
  *              and can be toggled via `NDEBUG`. `assert` will attempt to
  *              write to both `stderr` and a `*.assert` text file.

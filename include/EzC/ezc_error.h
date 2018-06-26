@@ -1,7 +1,5 @@
-/** @file       ezc_error.h
- *  @brief      Prioritize and write to file your error and debugging messages.
+/* ezc_error.h
  *  
- *  <!-------------------------------------------------------------------------
  *  Copyright (c) 2018 Kirk Lange <github.com/kirklange>
  *  
  *  This software is provided 'as-is', without any express or implied
@@ -19,11 +17,14 @@
  *  2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
  *  3. This notice may not be removed or altered from any source distribution.
- *  -------------------------------------------------------------------------->
  */
 
 #ifndef EZC_ERROR_H
 #define EZC_ERROR_H
+
+/** @file       ezc_error.h
+ *  @brief      Prioritize and write to file your error and debugging messages.
+ */
 
 #ifdef __cplusplus
 extern C
