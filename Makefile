@@ -32,10 +32,10 @@ LIB_NAME = ezc
 LIB_SUBDIR = EzC
 
 # Directories within /src of the apps and tests that you want to build.
-MAIN_SUBDIRS =
+MAIN_SUBDIRS = test_list
 
 # Name of the application(s) you want to test when you call `make test`.
-TEST =
+TEST = $(MAIN_SUBDIRS)
 
 # Name of the application (singular!) you want to run when you call `make run`.
 RUN =
@@ -77,7 +77,7 @@ MODE = static
 # In many cases the order in which your `-l`s appear matters! One limitation of
 # EzMake is that we assume all tests/mains use the same compiler flags. If this
 # becomes a big enough issue, this will be amended in a future version.
-CF = -std=c11 -O3 -w
+CF = -std=c89 -pedantic -O3 -w
 LF = #-lOpenGL32 -lglew32
 
 # Source file extensions you want compiled.
