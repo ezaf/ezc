@@ -32,12 +32,24 @@
 
 int main(int argc, char *argv[])
 {
-    ezc_list *names[2];
+    size_t const TOTAL = 4;
+
+    ezc_list *names[TOTAL];
     names[0] = ezc_list_new("Adam", "Ben", "Charles", NULL);
-    names[1] = ezc_list_copy(names[0]);
+    names[1] = ezc_list_new("Monica", "Olivia", NULL);
+    ezc_list_push(names[1], "n", -2, "Natalie", NULL);
+
+    names[2] = ezc_list_copy(names[0]);
+    names[3] = ezc_list_copy(names[1]);
+    
+    ezc_list_push(names[1], "f", "Amanda", "Bella", "Christy", NULL);
+    ezc_list_push(names[1], "b", "Xiaotian", "Yana", "Zoe", NULL);
+
+    ezc_list_swap(names[2], names[1]);
+    ezc_list_push(names[0], "c", names[1], names[2], NULL);
     
     size_t i;
-    for (i = 0; i < 2; i++)
+    for (i = 0; i < TOTAL; i++)
     {
         ezc_list *iter = names[i];
         printf("-- List #%u : length=%u --\n", i, ezc_list_length(names[i]));

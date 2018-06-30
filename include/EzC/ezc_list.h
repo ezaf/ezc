@@ -61,6 +61,10 @@ ezc_list* ezc_list_copy(ezc_list *orig);
 
 
 
+void ezc_list_swap(ezc_list *listA, ezc_list *listB);
+
+
+
 void ezc_list_delete(ezc_list *self);
 
 
@@ -73,31 +77,38 @@ void ezc_list_push(ezc_list *self, char const *mode, ...);
 
 
 
+#if 0
 void* ezc_list_pop(ezc_list *self, char const *mode, ...);
 
 
 
-void* ezc_list_get(ezc_list *self, char const *mode, ...);
+void* ezc_list_get(ezc_list const *self, char const *mode, ...);
+
+
+
+void ezc_list_map(ezc_list *self /* TODO: figure out interface */ );
+#endif
 
 
 
 /* Rather than have a bunch of functions with crazy-long names, there's going
  * to be only one function of each category with a mode parameter string.
 
-void ezc_list_push_front(ezc_list *list, void *data);
-void ezc_list_push_back(ezc_list *list, void *data);
-void ezc_list_push_n(ezc_list *list, void *data, size_t n);
-void ezc_list_push_rel(ezc_list *list, void *data, void *ref, long offset);
+void ezc_list_push_front(ezc_list *self, void *data);
+void ezc_list_push_back(ezc_list *self, void *data);
+void ezc_list_push_n(ezc_list *self, long n, void *data);
+void ezc_list_push_rel(ezc_list *self, void *ref, long offset, void *data);
 void ezc_list_cat(ezc_list *listA, ezc_list *listB);
 
-void* ezc_list_pop_front(ezc_list *list);
-void* ezc_list_pop_back(ezc_list *list);
-void* ezc_list_pop_n(ezc_list *list, size_t n);
-void? ezc_list_remove(ezc_list *list, void *data);
+void* ezc_list_pop_front(ezc_list *self);
+void* ezc_list_pop_back(ezc_list *self);
+void* ezc_list_pop_n(ezc_list *self, size_t n);
+void* ezc_list_pop_rel(ezc_list *self, void *ref, long offset);
+????? ezc_list_pop_match(ezc_list *self, void *data);
 
-void* ezc_list_front(ezc_list *list);
-void* ezc_list_back(ezc_list *list);
-void* ezc_list_n(ezc_list *list, size_t n);
+void* ezc_list_front(ezc_list *self);
+void* ezc_list_back(ezc_list *self);
+void* ezc_list_n(ezc_list *self, size_t n);
 */
 
 
