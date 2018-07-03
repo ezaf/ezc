@@ -23,13 +23,14 @@
 
 #include "EzC/ezc_assert.h"
 #include "EzC/ezc_error.h"
+#include "EzC/ezc_macro.h"
 #include "EzC/ezc_mem.h"
 #include <stdarg.h>
 #include <string.h>
 
 
 
-ezc_list* ezc_list_new(void *data, ...)
+ezc_list* ezc_list_new__(void *data, ...)
 {
     va_list arg_ptr;
     va_start(arg_ptr, data);
@@ -39,11 +40,12 @@ ezc_list* ezc_list_new(void *data, ...)
 
     while (data != NULL)
     {
+        /* Initialize this item and append to list */
         EZC_NEW(*iter);
         (*iter)->data = data;
-        iter = &(*iter)->next;
 
-        /* Increment data args */
+        /* Increment iterator and data args */
+        iter = &(*iter)->next;
         data = va_arg(arg_ptr, void *);
     }
 
@@ -54,7 +56,7 @@ ezc_list* ezc_list_new(void *data, ...)
 
 
 
-ezc_list* ezc_list_copy(ezc_list *orig)
+ezc_list* ezc_list_copy__(ezc_list *orig)
 {
     ezc_list *head = NULL;
     ezc_list **iter = &head;
@@ -74,7 +76,7 @@ ezc_list* ezc_list_copy(ezc_list *orig)
 
 
 
-void ezc_list_swap(ezc_list *listA, ezc_list *listB)
+void ezc_list_swap__(ezc_list *listA, ezc_list *listB)
 {
     assert(listA != NULL && listB != NULL);
     
@@ -93,25 +95,52 @@ void ezc_list_swap(ezc_list *listA, ezc_list *listB)
 
 
 
-void ezc_list_delete(ezc_list *self)
+void ezc_list_join__(ezc_list *self, ...)
 {
-    ezc_list *next;
+    va_list arg_ptr;
+    va_start(arg_ptr, self);
 
-    while (self != NULL)
+    ezc_list *prev;
+
+    while(self != NULL)
     {
-        next = self->next;
-        EZC_FREE(self);
-        self = next;
+        prev = self;
+        self = va_arg(arg_ptr, ezc_list*);
+
+        while (prev->next != NULL) prev = prev->next;
+        prev->next = self;
     }
 }
 
 
 
-size_t ezc_list_length(ezc_list *self)
+void ezc_list_delete__(ezc_list *self, ...)
 {
-    size_t length = 0;
+    va_list arg_ptr;
+    va_start(arg_ptr, self);
 
     while (self != NULL)
+    {
+        ezc_list *iter = self, *temp;
+
+        while (iter != NULL)
+        {
+            temp = iter->next;
+            EZC_FREE(iter);
+            iter = temp;
+        }
+
+        self = va_arg(arg_ptr, ezc_list*);
+    }
+}
+
+
+
+long ezc_list_length__(ezc_list *self)
+{
+    long length = 0;
+
+    while (self != NULL && length >= 0)
     {
         length++;
         self = self->next;
@@ -122,108 +151,54 @@ size_t ezc_list_length(ezc_list *self)
 
 
 
-void ezc_list_push(ezc_list *self, char const *mode, ...)
+void ezc_list_push_at__(ezc_list *self, long n, ...)
 {
-    assert(self != NULL && mode != NULL);
-    /* Mutually exclusive modes */
-    assert(!!strstr(mode, "f") ^ !!strstr(mode, "b") ^
-           !!strstr(mode, "n") ^ !!strstr(mode, "r") ^
-           !!strstr(mode, "c"));
-
     va_list arg_ptr;
-    va_start(arg_ptr, mode);
+    va_start(arg_ptr, n);
 
-    if (strstr(mode, "c")) /* Concatenate */
+    void *data;
+    ezc_list *data_list = NULL;
+    
+    /* Correct out-of-bounds indices */
+    n %= (ezc_list_length(self) + 1);
+    if (n < 0) n += (ezc_list_length(self) + 1);
+
+    /* Confirm out-of-bounds index correction */
+    assert(n <= ezc_list_length(self));
+    assert(n >= 0);
+
+    /* Get all data out of arg_ptr */
+    while ((data = va_arg(arg_ptr, void*)) != NULL)
     {
-        ezc_list *other;
-        
-        while ((other = va_arg(arg_ptr, ezc_list*)) != NULL)
-        {
-            while (self->next != NULL) self = self->next;
-            self->next = ezc_list_copy(other);
-        }
+        if (data_list == NULL) data_list = ezc_list_new(data);
+        else ezc_list_cat(data_list, ezc_list_new(data));
     }
-    else if (strstr(mode, "f") || strstr(mode, "b") || /* Push front or back */
-             strstr(mode, "n") || strstr(mode, "r"))   /* Insert at or rel */
+    
+    /* Now actually add it to self */
+    if (data_list != NULL)
     {
-        ezc_list *data_list = NULL;
-        void *data;
-        long n = 0;
-        
-        /* Figure out index */
-        if (strstr(mode, "f")) n = 0;
-        else if (strstr(mode, "b")) n = -1;
-        else if (strstr(mode, "n")) n = va_arg(arg_ptr, long);
-        else if (strstr(mode, "r"))
+        /* Concatenate new data with self[-n:] */
+        if (n != 0)
         {
-            void *ref = va_arg(arg_ptr, void*);
-            
-            /* Get position of reference item */
-            /* TODO: relegate this task to ezc_list_get(...) */
-            ezc_list *iter = self;
-            while (iter != NULL && iter->data != ref)
+            /* Simplify this block with ezc_list_get_at(self, n) */
+            ezc_list *iter = self, *prev = NULL;
+
+            while (iter != NULL && n-- > 0)
             {
-                n++;
+                prev = iter;
                 iter = iter->next;
             }
             
-            n += va_arg(arg_ptr, long);
+            if (prev != NULL) prev->next = NULL;
+
+            ezc_list_cat(data_list, iter);
         }
-
-        /* Correct out-of-bounds indices */
-        n %= ((long) ezc_list_length(self) + 1);
-        if (n < 0) n += (long) ezc_list_length(self) + 1;
-
-        /* Confirm out-of-bounds index correction */
-        assert(n <= ezc_list_length(self));
-        assert(n >= 0);
-
-        /* Get all data out of arg_ptr */
-        while ((data = va_arg(arg_ptr, void*)) != NULL)
+        else
         {
-            if (data_list == NULL)
-            {
-                data_list = ezc_list_new(data, NULL);
-            }
-            else
-            {
-                /* Functional programming FTW! */
-                ezc_list_push(data_list, "c", ezc_list_new(data, NULL), NULL);
-            }
+            /* Must swap order when n == 0 to push to front */
+            ezc_list_swap(data_list, self);
         }
-        
-        /* Now actually add it to self */
-        if (data_list != NULL)
-        {
-            /* Concatenate new data with self[-n:] */
-            if (n != 0)
-            {
-                ezc_list *iter = self, *prev = 0;
-                while (iter != NULL && n-- > 0)
-                {
-                    prev = iter;
-                    iter = iter->next;
-                }
-                
-                if (prev != NULL) prev->next = NULL;
 
-                ezc_list_push(data_list, "c", iter, NULL);
-            }
-            else
-            {
-                /* Must swap order to push to front (n == 0) */
-                ezc_list_swap(data_list, self);
-            }
-
-            ezc_list_push(self, "c", data_list, NULL);
-        }
+        ezc_list_cat(self, data_list);
     }
-    else
-    {
-        /*
-        ezc_error("ce", "No recognized char within mode string detected.", 0);
-        */
-    }
-
-    va_end(arg_ptr);
 }

@@ -31,6 +31,8 @@ extern C
 {
 #endif
 
+#include <stdarg.h>
+
 
 
 /** @brief      Add a message to the global log.
@@ -60,14 +62,11 @@ extern C
  *                          `INT_MAX`.
  *  @param      ...         `printf` style variadic arguments.
  */
-#define EZC_ERROR(kind, message, ...) \
-    (ezc_error(__FILE__, __LINE__, kind, message, __VA_ARGS__))
+#define ezc_error(kind, message, ...) \
+    (__ezc_error(__FILE__, __LINE__, (kind), (message), __VA_ARGS__))
 
-
-
-/* Use the macro instead! */
-void            ezc_error(char const *file, unsigned int line,
-                          char const *kind, char const *message, ...);
+void            __ezc_error(char const *file, unsigned int line,
+                            char const *kind, char const *message, ...);
 
 
 

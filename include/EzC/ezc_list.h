@@ -32,6 +32,8 @@ extern C
 {
 #endif
 
+#include "EzC/ezc_macro.h"
+#include <stdarg.h>
 #include <stddef.h>
 
 
@@ -49,67 +51,92 @@ ezc_list;
 
 
 /** @brief      Lorem ipsum
- *  @details    etc... must be NULL-terminated, data can = NULL etc...
- *  @param      data    Lorem ipsum
+ *  @details    Lorem ipsum
  *  @param      ...     Lorem ipsum
  */
-ezc_list* ezc_list_new(void *data, ...);
+#define ezc_list_new(self, ...) \
+    (ezc_list_new__((self), ##__VA_ARGS__, NULL))
+
+ezc_list* ezc_list_new__(void *data, ...);
 
 
 
-ezc_list* ezc_list_copy(ezc_list *orig);
+#define ezc_list_copy(orig) \
+    (ezc_list_copy__((orig)))
+
+ezc_list* ezc_list_copy__(ezc_list *orig);
 
 
 
-void ezc_list_swap(ezc_list *listA, ezc_list *listB);
+#define ezc_list_swap(listA, listB) \
+    (ezc_list_swap__((listA), (listB)))
+
+void ezc_list_swap__(ezc_list *listA, ezc_list *listB);
 
 
 
-void ezc_list_delete(ezc_list *self);
+#define ezc_list_join(self, ...) \
+    (ezc_list_join__((self), ##__VA_ARGS__, NULL))
+
+void ezc_list_join__(ezc_list *self, ...);
 
 
 
-size_t ezc_list_length(ezc_list *self);
+#define ezc_list_cat(self, ...) \
+    (ezc_list_join__((self), SST_MAP_LIST(ezc_list_copy, ##__VA_ARGS__), NULL))
 
 
 
-void ezc_list_push(ezc_list *self, char const *mode, ...);
+#define ezc_list_delete(self, ...) \
+    (ezc_list_delete__((self), ##__VA_ARGS__, NULL), \
+     SST_MAP(EZC_TO_ZERO, (self), ##__VA_ARGS__))
+
+void ezc_list_delete__(ezc_list *self, ...);
+
+
+
+/* long used so overflow is more obvious */
+#define ezc_list_length(self) \
+    (ezc_list_length__((self)))
+
+long ezc_list_length__(ezc_list *self);
+
+
+
+#define ezc_list_push_at(self, n, ...) \
+    (ezc_list_push_at__((self), (n), ##__VA_ARGS__, NULL))
+
+void ezc_list_push_at__(ezc_list *self, long n, ...);
+
+
+
+#define ezc_list_push_front(self, ...) \
+    (ezc_list_push_at__((self), 0, ##__VA_ARGS__, NULL))
+
+
+
+#define ezc_list_push_back(self, ...) \
+    (ezc_list_join__((self), SST_MAP_LIST(ezc_list_new, ##__VA_ARGS__), NULL))
 
 
 
 #if 0
-void* ezc_list_pop(ezc_list *self, char const *mode, ...);
+void* ezc_list_pop_front(ezc_list *self);
+void* ezc_list_pop_back(ezc_list *self);
+void* ezc_list_pop_at(ezc_list *self, long n);
+void* ezc_list_pop_match(ezc_list *self, long n);
 
 
 
-void* ezc_list_get(ezc_list const *self, char const *mode, ...);
 
+void ezc_list_remove(ezc_list const *self, void *data, ...);
 
+long ezc_list_get_at(ezc_list const *self, long n);
+
+long ezc_list_get_match(ezc_list const *self, void *data);
 
 void ezc_list_map(ezc_list *self /* TODO: figure out interface */ );
 #endif
-
-
-
-/* Rather than have a bunch of functions with crazy-long names, there's going
- * to be only one function of each category with a mode parameter string.
-
-void ezc_list_push_front(ezc_list *self, void *data);
-void ezc_list_push_back(ezc_list *self, void *data);
-void ezc_list_push_n(ezc_list *self, long n, void *data);
-void ezc_list_push_rel(ezc_list *self, void *ref, long offset, void *data);
-void ezc_list_cat(ezc_list *listA, ezc_list *listB);
-
-void* ezc_list_pop_front(ezc_list *self);
-void* ezc_list_pop_back(ezc_list *self);
-void* ezc_list_pop_n(ezc_list *self, size_t n);
-void* ezc_list_pop_rel(ezc_list *self, void *ref, long offset);
-????? ezc_list_pop_match(ezc_list *self, void *data);
-
-void* ezc_list_front(ezc_list *self);
-void* ezc_list_back(ezc_list *self);
-void* ezc_list_n(ezc_list *self, size_t n);
-*/
 
 
 

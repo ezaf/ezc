@@ -36,8 +36,8 @@ void ezc_assert(char const *file, unsigned int line, char const *expr)
     time_lcl = localtime(&time_raw);
 
     char file_name[FILENAME_MAX], file_message[2048];
-    strftime(file_name, EZC_LEN(file_name), "%F-%H-%M-%S.assert", time_lcl);
-    snprintf(file_message, EZC_LEN(file_message),
+    strftime(file_name, EZC_LENGTH(file_name), "%F-%H-%M-%S.assert", time_lcl);
+    snprintf(file_message, EZC_LENGTH(file_message),
             "EzC assertion failed!\n"
             "%s:%u\n"
             "%s\n", file, line, expr);

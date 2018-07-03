@@ -32,13 +32,15 @@ extern C
 {
 #endif
 
+#include "EzC/ezc_macro.h"
+
 
 
 /** @brief      Get the length of an array.
  *  @details    This works via the `sizeof(array)/sizeof(array[0])` technique.
  *  @param      array   Pointer to an array.
  */
-#define EZC_LEN(array) (sizeof(array)/sizeof(array[0]))
+#define EZC_LENGTH(array) (sizeof(array)/sizeof(array[0]))
 
 
 
@@ -66,7 +68,10 @@ extern C
  *  @param      ptr     Pointer that you want set to zero and whose memory it
  *                      was pointing to you want freed.
  */
-#define EZC_FREE(ptr) (free((ptr)), (ptr) = 0)
+#define EZC_FREE(self, ...) \
+    (SST_MAP(EZC_DO_FREE, self, ##__VA_ARGS__), \
+     SST_MAP(EZC_TO_ZERO, self, ##__VA_ARGS__))
+
 
 
 
