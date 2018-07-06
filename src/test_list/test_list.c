@@ -28,6 +28,20 @@
 #include <stdio.h>
 #include <string.h>
 
+void printme(char *str)
+{
+    printf(">> ");
+
+    while(*str && str != NULL)
+    {
+        printf("%c", *str);
+        str++;
+    }
+    
+    printf("\n");
+}
+
+
 
 int main(int argc, char *argv[])
 {
@@ -45,6 +59,8 @@ int main(int argc, char *argv[])
 
     ezc_list_swap(names[0], names[1]);
     ezc_list_cat(names[0], names[2]);
+
+    ezc_list_map(names[1], printme);
 
     char const *findme = "Yana";
     printf("Find index of \"%s\" in names[0]: %d\n\n", findme,

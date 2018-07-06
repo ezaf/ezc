@@ -168,29 +168,14 @@ ezc_list* ezc_list_get_at__(ezc_list const *self, long n)
 
 
 
-long ezc_list_get_match__(ezc_list const *self, void *data)
-{
-    long n = 0;
-
-    /* Find item n */
-    while (self != NULL && self->data != data)
-    {
-        n++;
-        self = self->next;
-    }
-
-    return n;
-}
-
-
-
-long ezc_list_get_match_fn__(ezc_list const *self, void *data,
+long ezc_list_get_match_fn__(ezc_list const *self, void const *data,
                              int (*neq)(void const *, void const *))
 {
     long n = 0;
 
     /* Find item n */
-    while (self != NULL && (*neq)(self->data, data))
+    while (self != NULL &&
+            (neq != 0 ? (*neq)(self->data, data) : self->data != data))
     {
         n++;
         self = self->next;
@@ -210,7 +195,7 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
     ezc_list *data_list = NULL;
     
     /* Get all data out of arg_ptr */
-    while ((data = va_arg(arg_ptr, void*)) != NULL)
+    while ((data = va_arg(arg_ptr, void const *)) != NULL)
     {
         if (data_list == NULL) data_list = ezc_list_new(data);
         else ezc_list_cat(data_list, ezc_list_new(data));
