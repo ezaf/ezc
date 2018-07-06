@@ -151,7 +151,7 @@ long ezc_list_length__(ezc_list const *self)
 
 
 
-ezc_list* ezc_list_get_at(ezc_list const *self, long n)
+ezc_list* ezc_list_get_at__(ezc_list const *self, long n)
 {
     /* Correct out-of-bounds indices, behave like Python indices */
     n %= (ezc_list_length(self) + 1);
@@ -168,8 +168,24 @@ ezc_list* ezc_list_get_at(ezc_list const *self, long n)
 
 
 
-long ezc_list_get_match(ezc_list const *self, void *data,
-                        int (*neq)(void const *, void const *))
+long ezc_list_get_match__(ezc_list const *self, void *data)
+{
+    long n = 0;
+
+    /* Find item n */
+    while (self != NULL && self->data != data)
+    {
+        n++;
+        self = self->next;
+    }
+
+    return n;
+}
+
+
+
+long ezc_list_get_match_fn__(ezc_list const *self, void *data,
+                             int (*neq)(void const *, void const *))
 {
     long n = 0;
 

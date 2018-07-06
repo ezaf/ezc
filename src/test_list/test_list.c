@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 
     char const *findme = "Yana";
     printf("Find index of \"%s\" in names[0]: %d\n\n", findme,
-            ezc_list_get_match(names[0], findme, strcmp));
+            ezc_list_get_match_fn(names[0], findme, strcmp));
     
     long i, j, length;
     for (i = 0; i < TOTAL; i++)
