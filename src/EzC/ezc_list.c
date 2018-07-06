@@ -30,7 +30,7 @@
 
 
 
-ezc_list* ezc_list_new__(void *data, ...)
+ezc_list* ezc_list_new__(void const *data, ...)
 {
     va_list arg_ptr;
     va_start(arg_ptr, data);
@@ -46,7 +46,7 @@ ezc_list* ezc_list_new__(void *data, ...)
 
         /* Increment iterator and data args */
         iter = &(*iter)->next;
-        data = va_arg(arg_ptr, void *);
+        data = va_arg(arg_ptr, void const *);
     }
 
     *iter = NULL;
@@ -56,7 +56,7 @@ ezc_list* ezc_list_new__(void *data, ...)
 
 
 
-ezc_list* ezc_list_copy__(ezc_list *orig)
+ezc_list* ezc_list_copy__(ezc_list const *orig)
 {
     ezc_list *head = NULL;
     ezc_list **iter = &head;
@@ -136,7 +136,7 @@ void ezc_list_delete__(ezc_list *self, ...)
 
 
 
-long ezc_list_length__(ezc_list *self)
+long ezc_list_length__(ezc_list const *self)
 {
     long length = 0;
 
@@ -151,6 +151,40 @@ long ezc_list_length__(ezc_list *self)
 
 
 
+ezc_list* ezc_list_get_at(ezc_list const *self, long n)
+{
+    /* Correct out-of-bounds indices, behave like Python indices */
+    n %= (ezc_list_length(self) + 1);
+    if (n < 0) n += (ezc_list_length(self) + 1);
+
+    /* Find item n */
+    while (self != NULL && n-- > 0)
+    {
+        self = self->next;
+    }
+
+    return self;
+}
+
+
+
+long ezc_list_get_match(ezc_list const *self, void *data,
+                        int (*neq)(void const *, void const *))
+{
+    long n = 0;
+
+    /* Find item n */
+    while (self != NULL && (*neq)(self->data, data))
+    {
+        n++;
+        self = self->next;
+    }
+
+    return n;
+}
+
+
+
 void ezc_list_push_at__(ezc_list *self, long n, ...)
 {
     va_list arg_ptr;
@@ -159,14 +193,6 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
     void *data;
     ezc_list *data_list = NULL;
     
-    /* Correct out-of-bounds indices */
-    n %= (ezc_list_length(self) + 1);
-    if (n < 0) n += (ezc_list_length(self) + 1);
-
-    /* Confirm out-of-bounds index correction */
-    assert(n <= ezc_list_length(self));
-    assert(n >= 0);
-
     /* Get all data out of arg_ptr */
     while ((data = va_arg(arg_ptr, void*)) != NULL)
     {
@@ -180,18 +206,13 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
         /* Concatenate new data with self[-n:] */
         if (n != 0)
         {
-            /* Simplify this block with ezc_list_get_at(self, n) */
-            ezc_list *iter = self, *prev = NULL;
+            ezc_list *prev = ezc_list_get_at(self, n-1),
+                     *split = prev->next;
 
-            while (iter != NULL && n-- > 0)
-            {
-                prev = iter;
-                iter = iter->next;
-            }
-            
-            if (prev != NULL) prev->next = NULL;
+            assert(prev != NULL);
+            prev->next = NULL;
 
-            ezc_list_cat(data_list, iter);
+            ezc_list_cat(data_list, split);
         }
         else
         {

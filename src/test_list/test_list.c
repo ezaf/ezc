@@ -24,9 +24,9 @@
  *  @details    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
  */
 
-#include <stdio.h>
-
 #include "EzC/ezc_list.h"
+#include <stdio.h>
+#include <string.h>
 
 
 int main(int argc, char *argv[])
@@ -45,16 +45,23 @@ int main(int argc, char *argv[])
 
     ezc_list_swap(names[0], names[1]);
     ezc_list_cat(names[0], names[2]);
+
+    char const *findme = "Yana";
+    printf("Find index of \"%s\" in names[0]: %d\n\n", findme,
+            ezc_list_get_match(names[0], findme, strcmp));
     
-    size_t i;
+    long i, j, length;
     for (i = 0; i < TOTAL; i++)
     {
         ezc_list *iter = names[i];
-        printf("-- List #%i : length=%i --\n", i, ezc_list_length(names[i]));
+        length = ezc_list_length(names[i]);
+        printf("-- List #%i : length=%i --\n", i, length);
 
-        for (; iter != NULL; iter = iter->next)
+        /* Not as efficient as iterating manually but we need to test
+         * ezc_list_get_at anyway */
+        for (j=0; j < length; j++)
         {
-            printf("%s\n", iter->data);
+            printf("%s\n", ezc_list_get_at(names[i], j)->data);
         }
 
         ezc_list_delete(names[i]);

@@ -57,14 +57,14 @@ ezc_list;
 #define ezc_list_new(self, ...) \
     (ezc_list_new__((self), ##__VA_ARGS__, NULL))
 
-ezc_list* ezc_list_new__(void *data, ...);
+ezc_list* ezc_list_new__(void const *data, ...);
 
 
 
 #define ezc_list_copy(orig) \
     (ezc_list_copy__((orig)))
 
-ezc_list* ezc_list_copy__(ezc_list *orig);
+ezc_list* ezc_list_copy__(ezc_list const *orig);
 
 
 
@@ -99,7 +99,16 @@ void ezc_list_delete__(ezc_list *self, ...);
 #define ezc_list_length(self) \
     (ezc_list_length__((self)))
 
-long ezc_list_length__(ezc_list *self);
+long ezc_list_length__(ezc_list const *self);
+
+
+
+ezc_list* ezc_list_get_at(ezc_list const *self, long n);
+
+
+
+long ezc_list_get_match(ezc_list const *self, void *data,
+                        int (*neq)(void const *, void const *));
 
 
 
@@ -121,9 +130,9 @@ void ezc_list_push_at__(ezc_list *self, long n, ...);
 
 
 #if 0
+void* ezc_list_pop_at(ezc_list *self, long n);
 void* ezc_list_pop_front(ezc_list *self);
 void* ezc_list_pop_back(ezc_list *self);
-void* ezc_list_pop_at(ezc_list *self, long n);
 void* ezc_list_pop_match(ezc_list *self, long n);
 
 
@@ -131,9 +140,6 @@ void* ezc_list_pop_match(ezc_list *self, long n);
 
 void ezc_list_remove(ezc_list const *self, void *data, ...);
 
-long ezc_list_get_at(ezc_list const *self, long n);
-
-long ezc_list_get_match(ezc_list const *self, void *data);
 
 void ezc_list_map(ezc_list *self /* TODO: figure out interface */ );
 #endif
