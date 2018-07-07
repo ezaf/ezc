@@ -117,16 +117,17 @@ ezc_list* ezc_list_get_at__(ezc_list const *self, long n);
 
 
 
-#define ezc_list_get_match(self, data) \
-    (ezc_list_get_match_fn__((self), (data), 0))
+#define ezc_list_get_match(self, index_out, data) \
+    (ezc_list_get_match_fn__((self), (index_out), 0, (data)))
 
 
 
-#define ezc_list_get_match_fn(self, data, neq) \
-    (ezc_list_get_match_fn__((self), (data), (neq)))
+#define ezc_list_get_match_fn(self, index_out, neq, data) \
+    (ezc_list_get_match_fn__((self), (index_out), (neq), (data)))
 
-long ezc_list_get_match_fn__(ezc_list const *self, void const *data,
-                             int (*neq)(void const *, void const *));
+ezc_list* ezc_list_get_match_fn__(ezc_list const *self, long *index_out,
+                                  int (*neq)(void const *, void const *),
+                                  void const *data);
 
 
 
@@ -147,16 +148,49 @@ void ezc_list_push_at__(ezc_list *self, long n, ...);
 
 
 
-void ezc_list_remove(ezc_list const *self, void *data, ...);
+#define ezc_list_pop_at(self, n) \
+    (ezc_list_pop_at__(&(self), (n)))
+
+ezc_list* ezc_list_pop_at__(ezc_list **self, long n);
+
+
+
+#define ezc_list_pop_front(self) \
+    (ezc_list_pop_at__(&(self), 0))
+
+
+
+#define ezc_list_pop_back(self) \
+    (ezc_list_pop_at__(&(self), -1))
 
 
 
 #if 0
-void* ezc_list_pop_at(ezc_list *self, long n);
-void* ezc_list_pop_front(ezc_list *self);
-void* ezc_list_pop_back(ezc_list *self);
+#define ezc_list_pop_match
 void* ezc_list_pop_match(ezc_list *self, long n,
                         int (*neq)(void const *, void const *));
+
+
+
+#define ezc_list_pop_match(self, data, ...) \
+    (ezc_list_pop_match_fn__((self), 0, (data), ##__VA_ARGS__))
+
+
+
+#define ezc_list_get_pop_fn(self, neq, data, ...) \
+    (ezc_list_pop_match_fn__((self), (neq), (data), ##__VA_ARGS__))
+
+long ezc_list_pop_match_fn__(ezc_list const *self,
+                             int (*neq)(void const *, void const *),
+                             void const *data, ...);
+
+
+
+#define ezc_list_erase_at(self, n)
+
+#define ezc_list_erase_front(self)
+
+#define ezc_list_erase_back(self)
 #endif
 
 

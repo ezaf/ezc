@@ -25,8 +25,22 @@
 #include "EzC/ezc_error.h"
 #include "EzC/ezc_macro.h"
 #include "EzC/ezc_mem.h"
+#include <limits.h>
 #include <stdarg.h>
 #include <string.h>
+
+
+
+/* Normalize integer index to unsigned index between 0 and length-1 */
+static long ezc_list_get_normal_index(ezc_list const *self, long n)
+{
+    long const LENGTH = ezc_list_length(self);
+
+    n += LENGTH;
+    n %= LENGTH;
+
+    return n;
+}
 
 
 
@@ -154,8 +168,7 @@ long ezc_list_length__(ezc_list const *self)
 ezc_list* ezc_list_get_at__(ezc_list const *self, long n)
 {
     /* Correct out-of-bounds indices, behave like Python indices */
-    n %= (ezc_list_length(self) + 1);
-    if (n < 0) n += (ezc_list_length(self) + 1);
+    n = ezc_list_get_normal_index(self, n);
 
     /* Find item n */
     while (self != NULL && n-- > 0)
@@ -168,20 +181,23 @@ ezc_list* ezc_list_get_at__(ezc_list const *self, long n)
 
 
 
-long ezc_list_get_match_fn__(ezc_list const *self, void const *data,
-                             int (*neq)(void const *, void const *))
+ezc_list* ezc_list_get_match_fn__(ezc_list const *self, long *index_out,
+                                  int (*neq)(void const *, void const *),
+                                  void const *data)
 {
-    long n = 0;
+    *index_out = 0;
 
     /* Find item n */
     while (self != NULL &&
             (neq != 0 ? (*neq)(self->data, data) : self->data != data))
     {
-        n++;
+        (*index_out)++;
         self = self->next;
     }
+    
+    if (self == NULL) *index_out = LONG_MIN;
 
-    return n;
+    return self;
 }
 
 
@@ -207,7 +223,7 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
         /* Concatenate new data with self[-n:] */
         if (n != 0)
         {
-            ezc_list *prev = ezc_list_get_at(self, n-1),
+            ezc_list *prev = ezc_list_get_at(self, (n<0 ? n : n-1)),
                      *split = prev->next;
 
             assert(prev != NULL);
@@ -223,4 +239,54 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
 
         ezc_list_cat(self, data_list);
     }
+
+    va_end(arg_ptr);
 }
+
+
+
+ezc_list* ezc_list_pop_at__(ezc_list **self, long n)
+{
+    ezc_list *popped = NULL;
+
+    if (self != NULL && *self != NULL)
+    {
+        if (n == 0)
+        {
+            popped = *self;
+            *self = (*self)->next;
+        }
+        else
+        {
+            ezc_list *prev = ezc_list_get_at(*self, n-1);
+            popped = prev->next;
+            prev->next = (popped == NULL ? NULL : popped->next);
+        }
+
+        if (popped != NULL) popped->next = NULL;
+    }
+
+    return popped;
+}
+
+
+
+#if 0
+long* ezc_list_get_match_fn__(ezc_list const *self, long *out,
+                              int (*neq)(void const *, void const *),
+                              void const *data)
+{
+    assert(out != NULL);
+
+    /* Find item n */
+    while (self != NULL &&
+            (neq != 0 ? (*neq)(self->data, data) : self->data != data))
+    {
+        (*out)++;
+        self = self->next;
+    }
+    
+    *out >= ezc_list_length(self) ? *out = n : out = NULL;
+    return out;
+}
+#endif
