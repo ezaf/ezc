@@ -30,8 +30,6 @@
 
 void printme(char *str)
 {
-    printf(">> ");
-
     while(*str && str != NULL)
     {
         printf("%c", *str);
@@ -61,11 +59,14 @@ int main(int argc, char *argv[])
     ezc_list_cat(names[0], names[2]);
 
     ezc_list_map(names[1], printme);
+
+    printf("testing get_at -2: %s\n", ezc_list_get_at(names[0], -2)->data);
     
     ezc_list_push_at(names[0], -1, "Saber-Toothed Cat");
     ezc_list *popped = ezc_list_pop_at(names[0], -1);
     if (popped != NULL) printf("POPPED: %s\n", popped->data);
     ezc_list_delete(popped);
+
 
     {
         long index;

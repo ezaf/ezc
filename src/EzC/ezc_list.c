@@ -35,8 +35,8 @@
 static long ezc_list_get_normal_index(ezc_list const *self, long n)
 {
     long const LENGTH = ezc_list_length(self);
-
-    n += LENGTH;
+    
+    while (n < 0) n += LENGTH;
     n %= LENGTH;
 
     return n;
