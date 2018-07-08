@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
     {
         long index;
-        char const *findme = "Xiaotian";
+        char const *findme = "Zoe";
         if (ezc_list_get_match_fn(names[0], &index, strcmp, findme))
             printf("Find index of \"%s\" in names[0]: %d\n", findme, index);
         else

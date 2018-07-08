@@ -78,7 +78,7 @@ void ezc_list_swap__(ezc_list *listA, ezc_list *listB);
 #define ezc_list_join(self, ...) \
     (ezc_list_join__((self), ##__VA_ARGS__, NULL))
 
-void ezc_list_join__(ezc_list *self, ...);
+ezc_list* ezc_list_join__(ezc_list *self, ...);
 
 
 

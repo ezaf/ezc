@@ -22,12 +22,10 @@
 #include "EzC/ezc_list.h"
 
 #include "EzC/ezc_assert.h"
-#include "EzC/ezc_error.h"
 #include "EzC/ezc_macro.h"
 #include "EzC/ezc_mem.h"
 #include <limits.h>
 #include <stdarg.h>
-#include <string.h>
 
 
 
@@ -49,7 +47,7 @@ ezc_list* ezc_list_new__(void const *data, ...)
     va_list arg_ptr;
     va_start(arg_ptr, data);
 
-    ezc_list *head = NULL;
+    ezc_list * const head = NULL;
     ezc_list **iter = &head;
 
     while (data != NULL)
@@ -72,7 +70,7 @@ ezc_list* ezc_list_new__(void const *data, ...)
 
 ezc_list* ezc_list_copy__(ezc_list const *orig)
 {
-    ezc_list *head = NULL;
+    ezc_list * const head = NULL;
     ezc_list **iter = &head;
     
     while (orig != NULL)
@@ -109,11 +107,12 @@ void ezc_list_swap__(ezc_list *listA, ezc_list *listB)
 
 
 
-void ezc_list_join__(ezc_list *self, ...)
+ezc_list* ezc_list_join__(ezc_list *self, ...)
 {
     va_list arg_ptr;
     va_start(arg_ptr, self);
 
+    ezc_list * const head = self;
     ezc_list *prev;
 
     while(self != NULL)
@@ -124,6 +123,8 @@ void ezc_list_join__(ezc_list *self, ...)
         while (prev->next != NULL) prev = prev->next;
         prev->next = self;
     }
+
+    return head;
 }
 
 
@@ -195,6 +196,7 @@ ezc_list* ezc_list_get_match_fn__(ezc_list const *self, long *index_out,
         self = self->next;
     }
     
+    /* If never found */
     if (self == NULL) *index_out = LONG_MIN;
 
     return self;
