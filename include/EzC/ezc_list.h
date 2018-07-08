@@ -118,7 +118,7 @@ ezc_list* ezc_list_get_at__(ezc_list const *self, long n);
 
 
 #define ezc_list_get_match(self, index_out, data) \
-    (ezc_list_get_match_fn__((self), (index_out), 0, (data)))
+    (ezc_list_get_match_fn__((self), (index_out), NULL, (data)))
 
 
 
@@ -165,25 +165,17 @@ ezc_list* ezc_list_pop_at__(ezc_list **self, long n);
 
 
 
-#if 0
-#define ezc_list_pop_match
-void* ezc_list_pop_match(ezc_list *self, long n,
-                        int (*neq)(void const *, void const *));
+#define ezc_list_pop_match(self, index_out, data) \
+    (ezc_list_pop_match_fn__((self), (index_out), NULL, (data)))
 
 
 
-#define ezc_list_pop_match(self, data, ...) \
-    (ezc_list_pop_match_fn__((self), 0, (data), ##__VA_ARGS__))
+#define ezc_list_pop_match_fn(self, index_out, neq, data, ...) \
+    (ezc_list_pop_match_fn__((self), (index_out), (neq), (data)))
 
-
-
-#define ezc_list_get_pop_fn(self, neq, data, ...) \
-    (ezc_list_pop_match_fn__((self), (neq), (data), ##__VA_ARGS__))
-
-long ezc_list_pop_match_fn__(ezc_list const *self,
-                             int (*neq)(void const *, void const *),
-                             void const *data, ...);
-#endif
+ezc_list* ezc_list_pop_match_fn__(ezc_list const *self, long *index_out,
+                                  int (*neq)(void const *, void const *),
+                                  void const *data);
 
 
 
@@ -196,6 +188,14 @@ long ezc_list_pop_match_fn__(ezc_list const *self,
 
 #define ezc_list_erase_back(self) \
     (ezc_list_delete__(ezc_list_pop_at__(&(self), -1), NULL))
+
+#define ezc_list_erase_match(self, index_out, data) \
+    (ezc_list_delete__( \
+            ezc_list_pop_match_fn__((self), (index_out), NULL, (data)), NULL))
+
+#define ezc_list_erase_match_fn(self, index_out, neq, data, ...) \
+    (ezc_list_delete__( \
+            ezc_list_pop_match_fn__((self), (index_out), (neq), (data)), NULL))
 
 
 

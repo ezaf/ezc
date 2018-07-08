@@ -70,7 +70,8 @@ int main(int argc, char *argv[])
     ezc_list_push_back(names[0], "Saber-Toothed Cat");
     ezc_list_erase_back(names[0]);
 
-
+    ezc_list_push_back(names[0], "Saber-Toothed Cat");
+    ezc_list_erase_match_fn(names[0], NULL, strcmp, "Saber-Toothed Cat");
 
     {
         long index;

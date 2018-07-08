@@ -271,22 +271,20 @@ ezc_list* ezc_list_pop_at__(ezc_list **self, long n)
 
 
 
-#if 0
-long* ezc_list_get_match_fn__(ezc_list const *self, long *out,
-                              int (*neq)(void const *, void const *),
-                              void const *data)
+ezc_list* ezc_list_pop_match_fn__(ezc_list const *self, long *index_out,
+                                  int (*neq)(void const *, void const *),
+                                  void const *data)
 {
-    assert(out != NULL);
+    ezc_list *popped = NULL;
+    long index = LONG_MIN;
 
-    /* Find item n */
-    while (self != NULL &&
-            (neq != 0 ? (*neq)(self->data, data) : self->data != data))
+    if (ezc_list_get_match_fn(self, &index, neq, data))
     {
-        (*out)++;
-        self = self->next;
+        popped = ezc_list_pop_at(self, index);
     }
-    
-    *out >= ezc_list_length(self) ? *out = n : out = NULL;
-    return out;
+
+    if (index_out != NULL)
+        *index_out = index;
+
+    return popped;
 }
-#endif
