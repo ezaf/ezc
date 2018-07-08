@@ -67,6 +67,10 @@ int main(int argc, char *argv[])
     if (popped != NULL) printf("POPPED: %s\n", popped->data);
     ezc_list_delete(popped);
 
+    ezc_list_push_back(names[0], "Saber-Toothed Cat");
+    ezc_list_erase_back(names[0]);
+
+
 
     {
         long index;

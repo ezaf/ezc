@@ -183,15 +183,19 @@ void* ezc_list_pop_match(ezc_list *self, long n,
 long ezc_list_pop_match_fn__(ezc_list const *self,
                              int (*neq)(void const *, void const *),
                              void const *data, ...);
-
-
-
-#define ezc_list_erase_at(self, n)
-
-#define ezc_list_erase_front(self)
-
-#define ezc_list_erase_back(self)
 #endif
+
+
+
+/* TODO: document that macro implementations must use the actual functions */
+#define ezc_list_erase_at(self, n) \
+    (ezc_list_delete__(ezc_list_pop_at__(&(self), (n)), NULL))
+
+#define ezc_list_erase_front(self) \
+    (ezc_list_delete__(ezc_list_pop_at__(&(self), 0), NULL))
+
+#define ezc_list_erase_back(self) \
+    (ezc_list_delete__(ezc_list_pop_at__(&(self), -1), NULL))
 
 
 
