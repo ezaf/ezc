@@ -216,7 +216,7 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
     while ((data = va_arg(arg_ptr, void const *)) != NULL)
     {
         if (data_list == NULL) data_list = ezc_list_new(data);
-        else ezc_list_cat(data_list, ezc_list_new(data));
+        else ezc_list_join(data_list, ezc_list_new(data));
     }
     
     /* Now actually add it to self */
@@ -231,7 +231,7 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
             assert(prev != NULL);
             prev->next = NULL;
 
-            ezc_list_cat(data_list, split);
+            ezc_list_join(data_list, split);
         }
         else
         {
@@ -239,7 +239,7 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
             ezc_list_swap(data_list, self);
         }
 
-        ezc_list_cat(self, data_list);
+        ezc_list_join(self, data_list);
     }
 
     va_end(arg_ptr);
