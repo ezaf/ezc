@@ -67,10 +67,11 @@ extern C
  *              use `EZC_FREE(ptr);`.
  *  @param      ptr     Pointer that you want set to zero and whose memory it
  *                      was pointing to you want freed.
+ *  @param      ...     Optional additional pointers you want to be freed.
  */
-#define EZC_FREE(self, ...) \
-    (SST_MAP(EZC_DO_FREE, self, ##__VA_ARGS__), \
-     SST_MAP(EZC_TO_ZERO, self, ##__VA_ARGS__))
+#define EZC_FREE(ptr, ...) \
+    (SST_MAP(EZC_DO_FREE, ptr, ##__VA_ARGS__), \
+     SST_MAP(EZC_TO_ZERO, ptr, ##__VA_ARGS__))
 
 
 
