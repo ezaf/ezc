@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     ezc_list_push_back(names[1], "Xiaotian", "Yana");
 
     ezc_list_swap(names[0], names[1]);
-    ezc_list_cat(names[0], names[2]);
+    ezc_list_cat(names[0], ezc_list_copy(names[2]));
 
     ezc_list_map(names[1], printme);
 
@@ -71,12 +71,12 @@ int main(int argc, char *argv[])
     ezc_list_erase_back(names[0]);
 
     ezc_list_push_back(names[0], "Saber-Toothed Cat");
-    ezc_list_erase_match_fn(names[0], NULL, strcmp, "Saber-Toothed Cat");
+    ezc_list_erase_match_fn(names[0], strcmp, "Saber-Toothed Cat");
 
     {
-        long index;
         char const *findme = "Zoe";
-        if (ezc_list_get_match_fn(names[0], &index, strcmp, findme))
+        long index = ezc_list_get_match_fn(names[0], strcmp, findme);
+        if (index >= 0)
             printf("Find index of \"%s\" in names[0]: %d\n", findme, index);
         else
             printf("Could not find index of \"%s\" in names[0].\n", findme);
@@ -84,9 +84,9 @@ int main(int argc, char *argv[])
 
 
     {
-        long index;
         char const *findme = "Zack";
-        if (ezc_list_get_match_fn(names[1], &index, strcmp, findme))
+        long index = ezc_list_get_match_fn(names[1], strcmp, findme);
+        if (index >= 0)
             printf("Find index of \"%s\" in names[1]: %d\n", findme, index);
         else
             printf("Could not find index of \"%s\" in names[1].\n", findme);

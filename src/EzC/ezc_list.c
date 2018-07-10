@@ -107,7 +107,7 @@ void ezc_list_swap__(ezc_list *listA, ezc_list *listB)
 
 
 
-ezc_list* ezc_list_join__(ezc_list *self, ...)
+ezc_list* ezc_list_cat__(ezc_list *self, ...)
 {
     va_list arg_ptr;
     va_start(arg_ptr, self);
@@ -166,6 +166,30 @@ long ezc_list_length__(ezc_list const *self)
 
 
 
+long ezc_list_get_index_of__(ezc_list const *self, ezc_list const *head)
+{
+    assert(self != NULL && head != NULL);
+    
+    long n = 0;
+    long const LENGTH = ezc_list_length(head);
+
+    while (head != NULL && head != self)
+    {
+        n++;
+        head = head->next;
+    }
+
+    if (n == LENGTH)
+    {
+        n = -1;
+        /* TODO: ezc_log(EZC_LOG_WARN, ...) */
+    }
+
+    return n;
+}
+
+
+
 ezc_list* ezc_list_get_at__(ezc_list const *self, long n)
 {
     /* Correct out-of-bounds indices, behave like Python indices */
@@ -182,23 +206,17 @@ ezc_list* ezc_list_get_at__(ezc_list const *self, long n)
 
 
 
-ezc_list* ezc_list_get_match_fn__(ezc_list const *self, long *index_out,
+ezc_list* ezc_list_get_match_fn__(ezc_list const *self,
                                   int (*neq)(void const *, void const *),
                                   void const *data)
 {
-    *index_out = 0;
-
     /* Find item n */
     while (self != NULL &&
             (neq != 0 ? (*neq)(self->data, data) : self->data != data))
     {
-        (*index_out)++;
         self = self->next;
     }
     
-    /* If never found */
-    if (self == NULL) *index_out = LONG_MIN;
-
     return self;
 }
 
@@ -216,7 +234,7 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
     while ((data = va_arg(arg_ptr, void const *)) != NULL)
     {
         if (data_list == NULL) data_list = ezc_list_new(data);
-        else ezc_list_join(data_list, ezc_list_new(data));
+        else ezc_list_cat(data_list, ezc_list_new(data));
     }
     
     /* Now actually add it to self */
@@ -231,7 +249,7 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
             assert(prev != NULL);
             prev->next = NULL;
 
-            ezc_list_join(data_list, split);
+            ezc_list_cat(data_list, split);
         }
         else
         {
@@ -239,7 +257,7 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
             ezc_list_swap(data_list, self);
         }
 
-        ezc_list_join(self, data_list);
+        ezc_list_cat(self, data_list);
     }
 
     va_end(arg_ptr);
@@ -273,20 +291,16 @@ ezc_list* ezc_list_pop_at__(ezc_list **self, long n)
 
 
 
-ezc_list* ezc_list_pop_match_fn__(ezc_list const *self, long *index_out,
+ezc_list* ezc_list_pop_match_fn__(ezc_list const *self,
                                   int (*neq)(void const *, void const *),
                                   void const *data)
 {
-    ezc_list *popped = NULL;
-    long index = LONG_MIN;
+    ezc_list *popped = ezc_list_get_match_fn(self, neq, data);
 
-    if (ezc_list_get_match_fn(self, &index, neq, data))
+    if (popped != NULL)
     {
-        popped = ezc_list_pop_at(self, index);
+        popped = ezc_list_pop_at(self, ezc_list_get_index_of(popped, self));
     }
-
-    if (index_out != NULL)
-        *index_out = index;
 
     return popped;
 }
