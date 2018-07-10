@@ -55,10 +55,18 @@ extern C
 
 /** @brief      Allocate memory based on the size of the given pointer while
  *              also zero-initializing it.
- *  @details    `EZC_NEW` documentation also applies to `EZC_NEW0`.
+ *  @details    `EZC_NEW` details documentation also applies to `EZC_NEW0`.
  *  @param      ptr     Pointer to which you want memory allocated.
  */
 #define EZC_NEW0(ptr) ((ptr) = calloc(1, sizeof *(ptr)))
+
+
+    
+/** @brief      Allocate array and zero-initialize it.
+ *  @details    `EZC_NEW` details documentation also applies to `EZC_NEWN`.
+ *  @param      ptr     Pointer to which you want memory allocated.
+ */
+#define EZC_NEWN(ptr, n) ((ptr) = calloc((n), sizeof *(ptr)))
 
 
 
