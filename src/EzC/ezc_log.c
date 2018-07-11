@@ -27,6 +27,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 
 
@@ -99,17 +100,78 @@ void ezc_log__(char const *file, long line,
     }
     else
     {
-        ezc_list_cat(EZC_LOG_LIST, ezc_list_new(log));
+        ezc_list_push_front(EZC_LOG_LIST, log);
     }
 
-    if (EZC_LOG_ECHO_DEST == NULL)
+    if (EZC_LOG_ECHO_DEST != NULL)
     {
-        EZC_LOG_ECHO_DEST = stdout;
+        fprintf(EZC_LOG_ECHO_DEST, log->message);
     }
-
-    fprintf(EZC_LOG_ECHO_DEST, log->message);
 
     va_end(args);
 
-    if (is_fatal) abort();
+    if (is_fatal)
+    {
+        ezc_log_fwrite();
+        abort();
+    }
+}
+
+
+
+void ezc_log_echo(FILE *dest)
+{
+    EZC_LOG_ECHO_DEST = dest;
+}
+
+
+
+char const* ezc_log_get(ezc_log_t type)
+{
+    ezc_list *iter = EZC_LOG_LIST;
+
+    while (iter != NULL)
+    {
+        if (((ezc_log_data *) iter->data)->type >= type)
+        {
+            break;
+        }
+
+        iter = iter->next;
+    }
+
+    return iter == NULL ? NULL : ((ezc_log_data *) iter->data)->message;
+}
+
+
+
+void ezc_log_fwrite()
+{
+    time_t rawtime;
+    struct tm *infotime;
+
+    time(&rawtime);
+    infotime = localtime(&rawtime);
+
+    char buf[26];
+    strftime(buf, 26, "%Y-%m-%d-%H-%M-%S.error", infotime);
+
+    FILE *file = fopen(buf, "w");
+    ezc_list *iter = EZC_LOG_LIST;
+
+    while (iter != NULL)
+    {
+        char const * const message = ((ezc_log_data *) iter->data)->message;
+        fwrite(message, sizeof(char), strlen(message), file);
+        iter = iter->next;
+    }
+
+    fclose(file);
+}
+
+
+
+void ezc_log_clear()
+{
+    ezc_list_delete(EZC_LOG_LIST);
 }

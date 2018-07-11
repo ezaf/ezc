@@ -36,14 +36,21 @@ extern C
 
 
 
-/**
- *
+/** @brief      Log severity
+ *  @details    Helps prioritize your log messages.
  */
 typedef enum ezc_log_t
 {
-    EZC_LOG_INFO,
+    /** Low priority. Simply displays diagnostic information. */
+    EZC_LOG_INFO = 0,
+
+    /** Medium priority. Results might be unordinary. */
     EZC_LOG_WARN,
+
+    /** High priority. A routine failed and might cause instability. */
     EZC_LOG_ERROR,
+
+    /** Unignorable priority. <i>LOGS OF THIS TYPE TRIGGER AN ABORT!</i> */
     EZC_LOG_FATAL
 }
 ezc_log_t;
@@ -52,8 +59,8 @@ ezc_log_t;
 
 /** @brief      Add message to global log
  *  @details    This macro accepts variadic arguments `printf` style. Messages
- *              are echoed to `stdout` by default. This can be changed via
- *              `ezc_log_echo(FILE *)`.
+ *              are not echoed to `stdout` or `stderr` by default, but this can
+ *              be changed via `ezc_log_echo(FILE *)`.
  *  @param      type        The message type enum. See `ezc_log_t`
  *                          documentation for more info.
  *  @param      message     The message itself. Supports formatting just like
@@ -64,14 +71,13 @@ ezc_log_t;
 #define ezc_log(type, message, ...) \
     (ezc_log__(__FILE__, __LINE__, (type), (message), ##__VA_ARGS__))
 
-void ezc_log__(char const *file, long line,
-               ezc_log_t type, char const *message, ...);
+void ezc_log__(char const *file, long line, ezc_log_t type,
+               char const *message, ...);
 
 
 
 /** @brief      Set where logs are echoed to
- *  @details    By default, without calling this function, logs are echoed to
- *              `stdout`.
+ *  @details    By default, logs are not echoed.
  *  @param      dest        Echo destination. This can be `stdout`, `stderr`,
  *                          or any file of your choosing.
  */
@@ -97,16 +103,16 @@ char const* ezc_log_get(ezc_log_t type);
 
 /** @brief      Write the global log to a file.
  *  @details    The file name is `YYYY-MM-DD-HH-MM-SS.error`, located in the
- *              same directory as the executable. If this file somehow already
- *              exists, it is overwritten. This function <i>does not</i> clear
- *              the log.
+ *              directory the program was called from. If this file somehow
+ *              already exists, it is overwritten. This function <i>does not
+ *              </i> clear the log.
  */
 void ezc_log_fwrite();
 
 
 
 /** @brief      Clear the global log.
- *  @details    Clears absolutely everything from info logs to critical logs.
+ *  @details    Clears absolutely everything from info logs to fatal logs.
  */
 void ezc_log_clear();
 

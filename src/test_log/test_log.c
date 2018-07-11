@@ -25,15 +25,26 @@
  */
 
 #include "EzC/ezc_log.h"
-#include <stdio.h>
 
 
 
 int main(int argc, char *argv[])
 {
+    ezc_log_echo(stdout);
+
     ezc_log(EZC_LOG_INFO, "Some boring info. Blah!");
     ezc_log(EZC_LOG_WARN, "This is a benign...");
     ezc_log(EZC_LOG_ERROR, "Now we're getting serious!");
+    ezc_log(EZC_LOG_INFO, "Just kidding, all is fine.");
+
+    printf("<ezc_log_get>\n%s</ezc_log_get>\n", ezc_log_get(EZC_LOG_WARN));
+
+    printf("Writing log to file...\n");
+    ezc_log_fwrite();
+    printf("Clearing log...\n");
+    ezc_log_clear();
+
+    printf("<ezc_log_get>\n%s</ezc_log_get>\n", ezc_log_get(EZC_LOG_WARN));
 
     return 0;
 }
