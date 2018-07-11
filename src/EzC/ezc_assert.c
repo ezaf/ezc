@@ -29,27 +29,28 @@
 
 void ezc_assert(char const *file, unsigned int line, char const *expr)
 {
-    time_t time_raw;
-    time(&time_raw);
+    time_t rawtime;
+    struct tm *infotime;
 
-    struct tm *time_lcl;
-    time_lcl = localtime(&time_raw);
+    time(&rawtime);
+    infotime = localtime(&rawtime);
 
-    char file_name[FILENAME_MAX], file_message[2048];
-    strftime(file_name, EZC_LENGTH(file_name), "%F-%H-%M-%S.assert", time_lcl);
-    snprintf(file_message, EZC_LENGTH(file_message),
+    char name[27], message[2048];
+    strftime(name, EZC_LENGTH(name), "%Y-%m-%d-%H-%M-%S.assert", infotime);
+    snprintf(message, EZC_LENGTH(message),
             "EzC assertion failed!\n"
             "%s:%u\n"
             "%s\n", file, line, expr);
 
-    FILE *file_out = fopen(file_name, "w");
-    if (file_out != NULL)
+    FILE *out = fopen(name, "w");
+
+    if (out != NULL)
     {
-        fprintf(file_out, file_message);
-        fclose(file_out);
+        fprintf(out, message);
+        fclose(out);
     }
 
-    fprintf(stderr, file_message);
+    fprintf(stderr, message);
 
     abort();
 }
