@@ -1,15 +1,15 @@
 /*  test_list.c
- *  
+ *
  *  Copyright (c) 2018 Kirk Lange <github.com/kirklange>
- *  
+ *
  *  This software is provided 'as-is', without any express or implied
  *  warranty. In no event will the authors be held liable for any damages
  *  arising from the use of this software.
- *  
+ *
  *  Permission is granted to anyone to use this software for any purpose,
  *  including commercial applications, and to alter it and redistribute it
  *  freely, subject to the following restrictions:
- *  
+ *
  *  1. The origin of this software must not be misrepresented; you must not
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
@@ -35,7 +35,7 @@ void printme(char *str)
         printf("%c", *str);
         str++;
     }
-    
+
     printf("\n");
 }
 
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 
     names[1] = ezc_list_copy(names[0]);
     names[2] = ezc_list_new("Zoe");
-    
+
     ezc_list_push_front(names[1], "Amanda", "Bella", "Christy");
     ezc_list_push_back(names[1], "Xiaotian", "Yana");
 
@@ -61,21 +61,24 @@ int main(int argc, char *argv[])
     ezc_list_map(names[1], printme);
 
     printf("testing get_at -2: %s\n", ezc_list_get_at(names[0], -2)->data);
-    
-    ezc_list_push_at(names[0], -1, "Saber-Toothed Cat");
+
+    ezc_list_push_at(names[0], -1, "Polar Bear");
     ezc_list *popped = ezc_list_pop_at(names[0], -1);
     if (popped != NULL) printf("POPPED: %s\n", popped->data);
     ezc_list_delete(popped);
 
-    ezc_list_push_back(names[0], "Saber-Toothed Cat");
+    ezc_list_push_back(names[0], "Polar Bear");
     ezc_list_erase_back(names[0]);
 
-    ezc_list_push_back(names[0], "Saber-Toothed Cat");
-    ezc_list_erase_match_fn(names[0], strcmp, "Saber-Toothed Cat");
+    ezc_list_push_back(names[0], "Polar Bear");
+    ezc_list_erase_match_fn(names[0], strcmp, "Polar Bear");
 
     {
         char const *findme = "Zoe";
-        long index = ezc_list_get_match_fn(names[0], strcmp, findme);
+        long index = ezc_list_get_index_of(
+                ezc_list_get_match_fn(names[0], strcmp, findme),
+                names[0]);
+
         if (index >= 0)
             printf("Find index of \"%s\" in names[0]: %d\n", findme, index);
         else
@@ -85,7 +88,10 @@ int main(int argc, char *argv[])
 
     {
         char const *findme = "Zack";
-        long index = ezc_list_get_match_fn(names[1], strcmp, findme);
+        long index = ezc_list_get_index_of(
+                ezc_list_get_match_fn(names[1], strcmp, findme),
+                names[1]);
+
         if (index >= 0)
             printf("Find index of \"%s\" in names[1]: %d\n", findme, index);
         else
@@ -95,7 +101,7 @@ int main(int argc, char *argv[])
 
     printf("\n");
 
-    
+
     long i, j, length;
     for (i = 0; i < TOTAL; i++)
     {

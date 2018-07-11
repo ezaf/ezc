@@ -33,7 +33,7 @@
 static long ezc_list_get_normal_index(ezc_list const *self, long n)
 {
     long const LENGTH = ezc_list_length(self);
-    
+
     while (n < 0) n += LENGTH;
     n %= LENGTH;
 
@@ -72,7 +72,7 @@ ezc_list* ezc_list_copy__(ezc_list const *orig)
 {
     ezc_list * const head = NULL;
     ezc_list **iter = &head;
-    
+
     while (orig != NULL)
     {
         EZC_NEW(*iter);
@@ -91,7 +91,7 @@ ezc_list* ezc_list_copy__(ezc_list const *orig)
 void ezc_list_swap__(ezc_list *listA, ezc_list *listB)
 {
     assert(listA != NULL && listB != NULL);
-    
+
     /* All we need to do is swap the heads of each list */
     ezc_list temp;
 
@@ -168,21 +168,27 @@ long ezc_list_length__(ezc_list const *self)
 
 long ezc_list_get_index_of__(ezc_list const *self, ezc_list const *head)
 {
-    assert(self != NULL && head != NULL);
-    
     long n = 0;
-    long const LENGTH = ezc_list_length(head);
 
-    while (head != NULL && head != self)
+    if (self != NULL && head != NULL)
     {
-        n++;
-        head = head->next;
-    }
+        long const LENGTH = ezc_list_length(head);
 
-    if (n == LENGTH)
+        while (head != NULL && head != self)
+        {
+            n++;
+            head = head->next;
+        }
+
+        if (n == LENGTH)
+        {
+            n = -1;
+            /* TODO: ezc_log(EZC_LOG_WARN, ...) */
+        }
+    }
+    else
     {
         n = -1;
-        /* TODO: ezc_log(EZC_LOG_WARN, ...) */
     }
 
     return n;
@@ -216,7 +222,7 @@ ezc_list* ezc_list_get_match_fn__(ezc_list const *self,
     {
         self = self->next;
     }
-    
+
     return self;
 }
 
@@ -229,14 +235,14 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
 
     void *data;
     ezc_list *data_list = NULL;
-    
+
     /* Get all data out of arg_ptr */
     while ((data = va_arg(arg_ptr, void const *)) != NULL)
     {
         if (data_list == NULL) data_list = ezc_list_new(data);
         else ezc_list_cat(data_list, ezc_list_new(data));
     }
-    
+
     /* Now actually add it to self */
     if (data_list != NULL)
     {
