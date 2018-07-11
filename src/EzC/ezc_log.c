@@ -159,11 +159,20 @@ void ezc_log_fwrite()
     FILE *file = fopen(buf, "w");
     ezc_list *iter = EZC_LOG_LIST;
 
-    while (iter != NULL)
+    if (file != NULL)
     {
-        char const * const message = ((ezc_log_data *) iter->data)->message;
-        fwrite(message, sizeof(char), strlen(message), file);
-        iter = iter->next;
+        while (iter != NULL)
+        {
+            char const * const message =
+                ((ezc_log_data *) iter->data)->message;
+            fwrite(message, sizeof(char), strlen(message), file);
+            iter = iter->next;
+        }
+    }
+    else
+    {
+        ezc_log(EZC_LOG_ERROR, "Unable to write log to file. "
+                "Error while opening/creating file.");
     }
 
     fclose(file);
