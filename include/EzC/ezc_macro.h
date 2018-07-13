@@ -1,15 +1,15 @@
-/*  ezc_mem.h
+/*  ezc_macro.h
  *
  *  Copyright (c) 2018 Kirk Lange <github.com/kirklange>
- *  
+ *
  *  This software is provided 'as-is', without any express or implied
  *  warranty. In no event will the authors be held liable for any damages
  *  arising from the use of this software.
- *  
+ *
  *  Permission is granted to anyone to use this software for any purpose,
  *  including commercial applications, and to alter it and redistribute it
  *  freely, subject to the following restrictions:
- *  
+ *
  *  1. The origin of this software must not be misrepresented; you must not
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
@@ -94,19 +94,24 @@
 
 
 
-/** @brief
- *  @details    Applies the function macro `f` to each of the parameters.
- *  @param      f       Lorem ipsum
- *  @param      ...     Lorem ipsum
+/** @brief      Map function to specified variables.
+ *  @details    Applies the function macro `f` to each of the arguments.
+ *  @param      f       Function macro.
+ *  @param      ...     Arguments to be passed to `f`.
+ *  @returns    N/A
  */
 #define SST_MAP(f, ...) \
     SST_EVAL(SST_MAP1(f, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
 
 
 
-/**
- * Applies the function macro `f` to each of the remaining parameters and
- * inserts commas between the results.
+/** @brief      Map function to specified variables and return their results.
+ *  @details    Applies the function macro `f` to each of the arguments and
+ *              and inserts commas between the results.
+ *  @param      f       Function macro.
+ *  @param      ...     Arguments to be passed to `f`.
+ *  @returns    The comma seperated results of `f` for each arguments it was
+ *              called with.
  */
 #define SST_MAP_LIST(f, ...) \
     SST_EVAL(SST_MAP_LIST1(f, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
