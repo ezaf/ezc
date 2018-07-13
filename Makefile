@@ -32,7 +32,7 @@ LIB_NAME = ezc
 LIB_SUBDIR = EzC
 
 # Directories within /src of the apps and tests that you want to build.
-MAIN_SUBDIRS = test_list test_log
+MAIN_SUBDIRS = test_list test_log test_callback
 
 # Name of the application(s) you want to test when you call `make test`.
 TEST = $(MAIN_SUBDIRS)
