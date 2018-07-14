@@ -14,7 +14,7 @@ Some helpful links if you want to use and/or contribute to the project!
 
 Resource | URL
 --- | ---
-Documentation | [ezaf.io/ezc](http://ezaf.io/ezc)
+Documentation | [ezc.ezaf.io](http://ezc.ezaf.io)
 GitHub | [github.com/ezaf/ezc](https://github.com/ezaf/ezc)
 Issues | [github.com/ezaf/ezc/issues](https://github.com/ezaf/ezc/issues)
 Build Status | [travis-ci.org/ezaf/ezc](https://travis-ci.org/ezaf/ezc)
