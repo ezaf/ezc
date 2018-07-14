@@ -1,15 +1,15 @@
 /* ezc_log.h
- *  
+ *
  *  Copyright (c) 2018 Kirk Lange <github.com/kirklange>
- *  
+ *
  *  This software is provided 'as-is', without any express or implied
  *  warranty. In no event will the authors be held liable for any damages
  *  arising from the use of this software.
- *  
+ *
  *  Permission is granted to anyone to use this software for any purpose,
  *  including commercial applications, and to alter it and redistribute it
  *  freely, subject to the following restrictions:
- *  
+ *
  *  1. The origin of this software must not be misrepresented; you must not
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
@@ -36,7 +36,7 @@ extern C
 
 
 
-/** @brief      Log severity
+/** @brief      Log severity.
  *  @details    Helps prioritize your log messages.
  */
 typedef enum ezc_log_t
@@ -57,7 +57,7 @@ ezc_log_t;
 
 
 
-/** @brief      Add message to global log
+/** @brief      Add message to global log.
  *  @details    This macro accepts variadic arguments `printf` style. Messages
  *              are not echoed to `stdout` or `stderr` by default, but this can
  *              be changed via `ezc_log_echo(FILE *)`.
@@ -76,7 +76,7 @@ void ezc_log__(char const *file, long line, ezc_log_t type,
 
 
 
-/** @brief      Set where logs are echoed to
+/** @brief      Set where logs are echoed to.
  *  @details    By default, logs are not echoed.
  *  @param      dest        Echo destination. This can be `stdout`, `stderr`,
  *                          or any file of your choosing.
@@ -85,7 +85,7 @@ void ezc_log_echo(FILE *dest);
 
 
 
-/** @brief      Get most recent message of at least given severity
+/** @brief      Get most recent message of at least given severity.
  *  @details    For example, if the most recent item in the log is of type
  *              `EZC_LOG_WARN`, but `ezc_log_get(EZC_LOG_ERROR)` is called, it
  *              will skip over the warning item and keep stepping back through

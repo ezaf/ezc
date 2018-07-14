@@ -41,7 +41,7 @@ extern C
 
 
 
-/** @brief      List item structure
+/** @brief      List item structure.
  *  @details    Because the first block stores the data, list items can in
  *              theory be case to the desired type, i.e. `(char *) item`. In
  *              practice, however, this is not recommended, do `item->data`
@@ -49,14 +49,17 @@ extern C
  */
 typedef struct ezc_list
 {
+    /** Pointer storing item's data. */
     void *data;
+
+    /** Pointer to next item in list. */
     struct ezc_list *next;
 }
 ezc_list;
 
 
 
-/** @brief      Initialize a list
+/** @brief      Initialize a list.
  *  @details    Blank lists cannot be initialized. Attempting so will result
  *              in this function returning `NULL`. Populate the list by
  *              writing as many arguments as you want. For example,
@@ -73,7 +76,7 @@ ezc_list* ezc_list_new__(void const *data, ...);
 
 
 
-/** @brief      Create deep copy
+/** @brief      Create deep copy.
  *  @details    Creates a deep copy of the provided list.
  *  @param      orig    `ezc_list const *` Pointer to the list that you want
  *                      copied.
@@ -87,7 +90,7 @@ ezc_list* ezc_list_copy__(ezc_list const *orig);
 
 
 
-/** @brief      Swap contents of two lists
+/** @brief      Swap contents of two lists.
  *  @details    Neither list can be `NULL`. This can be used to switch two
  *              items in a list or switch what list each pointer is pointing
  *              to, for example.
@@ -102,7 +105,7 @@ void ezc_list_swap__(ezc_list *listA, ezc_list *listB);
 
 
 
-/** @brief      Join multiple lists (no new memory allocated)
+/** @brief      Join multiple lists (no new memory allocated).
  *  @details    Attach tail-to-head the given lists.
  *  @param      self    `ezc_list *` Pointer to the list you want to be the
  *                      front-most.
@@ -118,7 +121,7 @@ ezc_list* ezc_list_cat__(ezc_list *self, ...);
 
 
 
-/** @brief      Free given lists
+/** @brief      Free given lists.
  *  @details    Free the memory holding the lists. Also set the pointers to
  *              equal `NULL` to help prevent dangling pointers.
  *  @param      self    `ezc_list *` Pointer to a list.
@@ -134,7 +137,7 @@ void ezc_list_delete__(ezc_list *self, ...);
 
 
 
-/** @brief      Length of list
+/** @brief      Length of list.
  *  @details    The use of signed `long` is encouraged so that overflow is
  *              easier to detect.
  *  @param      self    `ezc_list const *` Pointer to a list.
@@ -147,7 +150,7 @@ long ezc_list_length__(ezc_list const *self);
 
 
 
-/** @brief      Apply function to each item of list
+/** @brief      Apply function to each item of list.
  *  @details    See `fn` documentation for how to design the function's
  *              interface.
  *  @param      self    `ezc_list *` Pointer to a list.
@@ -166,7 +169,7 @@ long ezc_list_length__(ezc_list const *self);
 
 
 
-/** @brief      Get index of item
+/** @brief      Get index of item.
  *  @details    List indices behave similar Python indices. Negative indices
  *              count backwards from the tail. One behavior of `ezc_list`
  *              indices is that if `n` is greater than the list length, `n`
@@ -190,7 +193,7 @@ long ezc_list_get_index_of__(ezc_list const *self, ezc_list const *head);
 
 
 
-/** @brief      Get item at index `n`
+/** @brief      Get item at index `n`.
  *  @details    List indices behave similar Python indices. Negative indices
  *              count backwards from the tail. One behavior of `ezc_list`
  *              indices is that if `n` is greater than the list length, `n`
@@ -211,7 +214,7 @@ ezc_list* ezc_list_get_at__(ezc_list const *self, long n);
 
 
 
-/** @brief      Get item matching given data (via `!=` operator)
+/** @brief      Get item matching given data (via `!=` operator).
  *  @details    Get the first item in the list whose data matches what is
  *              provided.
  *  @param      self        `ezc_list const *` Pointer to a list.
@@ -225,7 +228,7 @@ ezc_list* ezc_list_get_at__(ezc_list const *self, long n);
 
 
 
-/** @brief      Get item matching given data (via custom comparison function)
+/** @brief      Get item matching given data (via custom comparison function).
  *  @details    Get the first item in the list whose data matches what is
  *              provided. When checking whether an item does or does not equal
  *              the provided data, use a custom comparison function.
@@ -248,7 +251,7 @@ ezc_list* ezc_list_get_match_fn__(ezc_list const *self,
 
 
 
-/** @brief      Push items to index `n`
+/** @brief      Push items to index `n`.
  *  @details    List indices behave as described in the `ezc_list_get_index_of`
  *              documentation.
  *  @param      self    `ezc_list const *` Pointer to a list.
@@ -264,7 +267,7 @@ void ezc_list_push_at__(ezc_list *self, long n, ...);
 
 
 
-/** @brief      Push items to the front
+/** @brief      Push items to the front.
  *  @details    Equivalent to `ezc_list_push_at(self, 0, ...)`.
  *  @param      self    `ezc_list const *` Pointer to a list.
  *  @param      ...     `void const *` Data you want to be pushed to the list.
@@ -276,7 +279,7 @@ void ezc_list_push_at__(ezc_list *self, long n, ...);
 
 
 
-/** @brief      Push items to the back
+/** @brief      Push items to the back.
  *  @details    <i>NOT</i> equivalent to `ezc_list_push_at(self, -1, ...)`.
  *              Doing that would result in the old last item still being the
  *              last item. Instead, this is equivalent to concatenating the
@@ -291,7 +294,7 @@ void ezc_list_push_at__(ezc_list *self, long n, ...);
 
 
 
-/** @brief      Pop item at index `n`
+/** @brief      Pop item at index `n`.
  *  @details    List indices behave as described in the `ezc_list_get_index_of`
  *              documentation.
  *  @param      self    `ezc_list const *` Pointer to a list.
@@ -309,7 +312,7 @@ ezc_list* ezc_list_pop_at__(ezc_list **self, long n);
 
 
 
-/** @brief      Pop first item
+/** @brief      Pop first item.
  *  @details    Equivalent to `ezc_list_pop_at(self, 0)`.
  *  @param      self    `ezc_list const *` Pointer to a list.
  *  @returns    `ezc_list *` Pointer to the item that got popped. See
@@ -320,7 +323,7 @@ ezc_list* ezc_list_pop_at__(ezc_list **self, long n);
 
 
 
-/** @brief      Pop last item
+/** @brief      Pop last item.
  *  @details    Equivalent to `ezc_list_pop_at(self, -1)`.
  *  @param      self    `ezc_list const *` Pointer to a list.
  *  @returns    `ezc_list *` Pointer to the item that got popped. See
@@ -331,7 +334,7 @@ ezc_list* ezc_list_pop_at__(ezc_list **self, long n);
 
 
 
-/** @brief      Pop item matching given data (via `!=` operator)
+/** @brief      Pop item matching given data (via `!=` operator).
  *  @details    Pop the first item in the list whose data matches what is
  *              provided.
  *  @param      self        `ezc_list const *` Pointer to a list.
@@ -346,7 +349,7 @@ ezc_list* ezc_list_pop_at__(ezc_list **self, long n);
 
 
 
-/** @brief      Pop item matching given data (via custom comparison function)
+/** @brief      Pop item matching given data (via custom comparison function).
  *  @details    Pop the first item in the list whose data matches what is
  *              provided. When checking whether an item does or does not equal
  *              the provided data, use a custom comparison function.
@@ -370,7 +373,7 @@ ezc_list* ezc_list_pop_match_fn__(ezc_list const *self,
 
 
 
-/** @brief      Erase item at index `n`
+/** @brief      Erase item at index `n`.
  *  @details    List indices behave as described in the `ezc_list_get_index_of`
  *              documentation. Equivalent to
  *              `ezc_list_delete(ezc_list_pop_at(self, n));`.
@@ -383,7 +386,7 @@ ezc_list* ezc_list_pop_match_fn__(ezc_list const *self,
 
 
 
-/** @brief      Erase first item
+/** @brief      Erase first item.
  *  @details    Equivalent to `ezc_list_erase_at(self, 0)`.
  *  @param      self    `ezc_list const *` Pointer to a list.
  *  @returns    N/A
@@ -393,7 +396,7 @@ ezc_list* ezc_list_pop_match_fn__(ezc_list const *self,
 
 
 
-/** @brief      Erase last item
+/** @brief      Erase last item.
  *  @details    Equivalent to `ezc_list_erase_at(self, -1)`.
  *  @param      self    `ezc_list const *` Pointer to a list.
  *  @returns    N/A
@@ -403,7 +406,7 @@ ezc_list* ezc_list_pop_match_fn__(ezc_list const *self,
 
 
 
-/** @brief      Erase item matching given data (via `!=` operator)
+/** @brief      Erase item matching given data (via `!=` operator).
  *  @details    Erase the first item in the list whose data matches what is
  *              provided.
  *  @param      self        `ezc_list const *` Pointer to a list.
@@ -417,7 +420,8 @@ ezc_list* ezc_list_pop_match_fn__(ezc_list const *self,
 
 
 
-/** @brief      Erase item matching given data (via custom comparison function)
+/** @brief      Erase item matching given data (via custom comparison
+ *              function).
  *  @details    Erase the first item in the list whose data matches what is
  *              provided. When checking whether an item does or does not equal
  *              the provided data, use a custom comparison function.
