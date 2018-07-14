@@ -1,4 +1,4 @@
-/** ezc_callback.h
+/*  ezc_callback.h
  *
  *  Copyright (c) 2018 Kirk Lange <github.com/kirklange>
  *
@@ -23,8 +23,9 @@
 #define EZC_CALLBACK_H
 
 /** @file       ezc_callback.h
- *  @brief      Lorem ipsum
- *  @details    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ *  @brief      Callback/Observer interface.
+ *  @details    Can be made into the observer design pattern when coupled with
+ *              `ezc_list`.
  */
 
 #ifdef __cplusplus
@@ -34,44 +35,36 @@ extern C
 
 
 
+/** @brief      Callback object.
+ *  @details    This is an opaque `struct`. Please use the provided interface
+ *              to interact with it.
+ */
 typedef struct ezc_callback ezc_callback;
 
 
 
-/** @brief      Lorem ipsum
- *  @details    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
- *              eiusmod tempor incididunt ut labore et dolore magna aliqua.
- *  @param      alpha   Ut enim ad minim veniam, quis nostrud exercitation
- *                      ullamco laboris nisi ut aliquip ex ea commodo
- *                      consequat.
- *  @param      beta    Duis aute irure dolor in reprehenderit in voluptate
- *                      velit esse cillum dolore eu fugiat nulla pariatur.
- *  @return     Excepteur sint occaecat cupidatat non proident, sunt in culpa
- *              qui officia deserunt mollit anim id est laborum.
+/** @brief      Create a new callback object.
+ *  @details    As of now there are no "setter" methods that allow you to
+ *              change this object's values later. (Instead, delete and
+ *              recreate the object instead.)
+ *  @param      fn      Pointer to a function. This function must accept one
+ *                      argument, a pointer to the same type as `arg`.
+ *  @param      arg     `void *` Pointer to data that you want passed to `fn`.
+ *  @returns    Pointer to newly allocated callback object.
  */
 ezc_callback* ezc_callback_new(void (*fn)(void*), void *arg);
 
 
 
-/** @brief      Lorem ipsum
- *  @details    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
- *              eiusmod tempor incididunt ut labore et dolore magna aliqua.
- *  @param      self    Ut enim ad minim veniam, quis nostrud exercitation
- *                      ullamco laboris nisi ut aliquip ex ea commodo
- *                      consequat.
- *  @returns    N/A
+/** @brief      Free given callback object.
+ *  @param      self    `ezc_callback *` Pointer to a callback object.
  */
 void ezc_callback_delete(ezc_callback *self);
 
 
 
-/** @brief      Lorem ipsum
- *  @details    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
- *              eiusmod tempor incididunt ut labore et dolore magna aliqua.
- *  @param      self    Ut enim ad minim veniam, quis nostrud exercitation
- *                      ullamco laboris nisi ut aliquip ex ea commodo
- *                      consequat.
- *  @returns    N/A
+/** @brief      Perform a callback.
+ *  @param      self    `ezc_callback const *` Pointer to a callback object.
  */
 void ezc_callback_call(ezc_callback const *self);
 
