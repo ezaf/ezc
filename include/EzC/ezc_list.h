@@ -94,14 +94,14 @@ ezc_list* ezc_list_copy__(ezc_list const *orig);
  *  @details    Neither list can be `NULL`. This can be used to switch two
  *              items in a list or switch what list each pointer is pointing
  *              to, for example.
- *  @param      listA   `ezc_list *` Pointer to a list.
- *  @param      listB   `ezc_list *` Pointer to another list.
+ *  @param      a       `ezc_list *` Pointer to a list.
+ *  @param      b       `ezc_list *` Pointer to another list.
  *  @returns    N/A
  */
-#define ezc_list_swap(listA, listB) \
-    (ezc_list_swap__((listA), (listB)))
+#define ezc_list_swap(a, b) \
+    (ezc_list_swap__((a), (b)))
 
-void ezc_list_swap__(ezc_list *listA, ezc_list *listB);
+void ezc_list_swap__(ezc_list *a, ezc_list *b);
 
 
 
@@ -261,7 +261,10 @@ ezc_list* ezc_list_get_match_fn__(ezc_list const *self,
  *  @returns    N/A
  */
 #define ezc_list_push_at(self, n, ...) \
-    (ezc_list_push_at__((self), (n), ##__VA_ARGS__, NULL))
+    do { \
+        if ((self) == NULL) (self) = ezc_list_new__(__VA_ARGS__, NULL); \
+        else ezc_list_push_at__((self), (n), ##__VA_ARGS__, NULL); \
+    } while (0)
 
 void ezc_list_push_at__(ezc_list *self, long n, ...);
 
@@ -275,7 +278,10 @@ void ezc_list_push_at__(ezc_list *self, long n, ...);
  *  @returns    N/A
  */
 #define ezc_list_push_front(self, ...) \
-    (ezc_list_push_at__((self), 0, ##__VA_ARGS__, NULL))
+    do { \
+        if ((self) == NULL) (self) = ezc_list_new__(__VA_ARGS__, NULL); \
+        else ezc_list_push_at__((self), 0, ##__VA_ARGS__, NULL); \
+    } while (0)
 
 
 
@@ -290,7 +296,13 @@ void ezc_list_push_at__(ezc_list *self, long n, ...);
  *  @returns    N/A
  */
 #define ezc_list_push_back(self, ...) \
-    (ezc_list_cat__((self), SST_MAP_LIST(ezc_list_new, ##__VA_ARGS__), NULL))
+    do { \
+        if ((self) == NULL) (self) = ezc_list_new__(__VA_ARGS__, NULL); \
+        else ezc_list_cat__((self), \
+                SST_MAP_LIST(ezc_list_new, ##__VA_ARGS__), \
+                NULL); \
+    } while (0)
+
 
 
 

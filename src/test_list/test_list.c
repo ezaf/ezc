@@ -25,6 +25,7 @@
  */
 
 #include "EzC/ezc_list.h"
+#include "EzC/ezc_mem.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -44,13 +45,14 @@ void printme(char *str)
 int main(int argc, char *argv[])
 {
     size_t const TOTAL = 3;
-    ezc_list *names[TOTAL];
+    ezc_list **names = EZC_NEWN(names, TOTAL);
 
     names[0] = ezc_list_new("Monica", "Natalie");
     ezc_list_push_at(names[0], -1, "Olivia");
 
     names[1] = ezc_list_copy(names[0]);
-    names[2] = ezc_list_new("Zoe");
+    /* names[2] = ezc_list_new("Zoe"); */
+    ezc_list_push_front(names[2], "Zoe");
 
     ezc_list_push_front(names[1], "Amanda", "Bella", "Christy");
     ezc_list_push_back(names[1], "Xiaotian", "Yana");

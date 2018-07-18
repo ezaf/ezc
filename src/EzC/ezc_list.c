@@ -88,21 +88,21 @@ ezc_list* ezc_list_copy__(ezc_list const *orig)
 
 
 
-void ezc_list_swap__(ezc_list *listA, ezc_list *listB)
+void ezc_list_swap__(ezc_list *a, ezc_list *b)
 {
-    assert(listA != NULL && listB != NULL);
+    assert(a != NULL && b != NULL);
 
     /* All we need to do is swap the heads of each list */
     ezc_list temp;
 
-    temp.data = listA->data;
-    temp.next  = listA->next;
+    temp.data = a->data;
+    temp.next  = a->next;
 
-    listA->data = listB->data;
-    listA->next = listB->next;
+    a->data = b->data;
+    a->next = b->next;
 
-    listB->data = temp.data;
-    listB->next = temp.next;
+    b->data = temp.data;
+    b->next = temp.next;
 }
 
 
