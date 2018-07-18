@@ -31,6 +31,8 @@
 
 void printme(char *str)
 {
+    printf("[printme]: ");
+
     while(*str && str != NULL)
     {
         printf("%c", *str);
@@ -48,7 +50,7 @@ int main(int argc, char *argv[])
     ezc_list **names = EZC_NEWN(names, TOTAL);
 
     names[0] = ezc_list_new("Monica", "Natalie");
-    ezc_list_push_at(names[0], -1, "Olivia");
+    ezc_list_push_at(names[0], 2, "Olivia"); /* Equivalent to push_back */
 
     names[1] = ezc_list_copy(names[0]);
     /* names[2] = ezc_list_new("Zoe"); */
@@ -62,10 +64,10 @@ int main(int argc, char *argv[])
 
     ezc_list_map(names[1], printme);
 
-    printf("testing get_at -2: %s\n", ezc_list_get_at(names[0], -2)->data);
+    printf("testing get_at 1: %s\n", ezc_list_get_at(names[0], 1)->data);
 
-    ezc_list_push_at(names[0], -1, "Polar Bear");
-    ezc_list *popped = ezc_list_pop_at(names[0], -1);
+    ezc_list_push_at(names[0], 1, "Polar Bear");
+    ezc_list *popped = ezc_list_pop_at(names[0], 1);
     if (popped != NULL) printf("POPPED: %s\n", popped->data);
     ezc_list_delete(popped);
 

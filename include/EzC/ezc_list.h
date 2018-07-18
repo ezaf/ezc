@@ -342,7 +342,7 @@ ezc_list* ezc_list_pop_at__(ezc_list **self, long n);
  *              `ezc_list_pop_at` documentation for more details.
  */
 #define ezc_list_pop_back(self) \
-    (ezc_list_pop_at__(&(self), -1))
+    (ezc_list_pop_at__(&(self), ezc_list_length__((self))-1))
 
 
 
@@ -414,7 +414,9 @@ ezc_list* ezc_list_pop_match_fn__(ezc_list const *self,
  *  @returns    N/A
  */
 #define ezc_list_erase_back(self) \
-    (ezc_list_delete__(ezc_list_pop_at__(&(self), -1), NULL))
+    (ezc_list_delete__( \
+            ezc_list_pop_at__(&(self), ezc_list_length__((self))-1), \
+            NULL))
 
 
 

@@ -22,23 +22,11 @@
 #include "EzC/ezc_list.h"
 
 #include "EzC/ezc_assert.h"
+#include "EzC/ezc_log.h"
 #include "EzC/ezc_macro.h"
 #include "EzC/ezc_mem.h"
 #include <limits.h>
 #include <stdarg.h>
-
-
-
-/* Normalize integer index to unsigned index between 0 and length-1 */
-static long ezc_list_get_normal_index(ezc_list const *self, long n)
-{
-    long const LENGTH = ezc_list_length(self);
-
-    while (n < 0) n += LENGTH;
-    n %= LENGTH;
-
-    return n;
-}
 
 
 
@@ -183,7 +171,7 @@ long ezc_list_get_index_of__(ezc_list const *self, ezc_list const *head)
         if (n == LENGTH)
         {
             n = -1;
-            /* TODO: ezc_log(EZC_LOG_WARN, ...) */
+            ezc_log(EZC_LOG_WARN, "Could not find item in list.");
         }
     }
     else
@@ -198,10 +186,9 @@ long ezc_list_get_index_of__(ezc_list const *self, ezc_list const *head)
 
 ezc_list* ezc_list_get_at__(ezc_list const *self, long n)
 {
-    /* Correct out-of-bounds indices, behave like Python indices */
-    n = ezc_list_get_normal_index(self, n);
+    assert(n >= 0 && n < ezc_list_length(self));
 
-    /* Find item n */
+    /* Find nth item */
     while (self != NULL && n-- > 0)
     {
         self = self->next;
@@ -216,7 +203,6 @@ ezc_list* ezc_list_get_match_fn__(ezc_list const *self,
                                   int (*neq)(void const *, void const *),
                                   void const *data)
 {
-    /* Find item n */
     while (self != NULL &&
             (neq != 0 ? (*neq)(self->data, data) : self->data != data))
     {
@@ -230,6 +216,9 @@ ezc_list* ezc_list_get_match_fn__(ezc_list const *self,
 
 void ezc_list_push_at__(ezc_list *self, long n, ...)
 {
+    /* Pushing at list length is valid. This is equivalent to push_back. */
+    assert(n >= 0 && n <= ezc_list_length(self));
+
     va_list arg_ptr;
     va_start(arg_ptr, n);
 
@@ -246,21 +235,20 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
     /* Now actually add it to self */
     if (data_list != NULL)
     {
-        /* Concatenate new data with self[-n:] */
-        if (n != 0)
-        {
-            ezc_list *prev = ezc_list_get_at(self, (n<0 ? n : n-1)),
-                     *split = prev->next;
-
-            assert(prev != NULL);
-            prev->next = NULL;
-
-            ezc_list_cat(data_list, split);
-        }
-        else
+        if (n == 0)
         {
             /* Must swap order when n == 0 to push to front */
             ezc_list_swap(data_list, self);
+        }
+        else
+        {
+            /* Concatenate new data with 0-to-(n-1) chunck of self */
+            ezc_list *prev = ezc_list_get_at(self, n-1),
+                     *split = prev->next;
+
+            prev->next = NULL;
+
+            ezc_list_cat(data_list, split);
         }
 
         ezc_list_cat(self, data_list);
@@ -273,6 +261,9 @@ void ezc_list_push_at__(ezc_list *self, long n, ...)
 
 ezc_list* ezc_list_pop_at__(ezc_list **self, long n)
 {
+    /* Mind the double pointer parameter! */
+    assert(n >= 0 && n < ezc_list_length(*self));
+
     ezc_list *popped = NULL;
 
     if (self != NULL && *self != NULL)
