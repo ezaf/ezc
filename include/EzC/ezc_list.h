@@ -170,20 +170,14 @@ long ezc_list_length__(ezc_list const *self);
 
 
 /** @brief      Get index of item.
- *  @details    List indices behave similar Python indices. Negative indices
- *              count backwards from the tail. One behavior of `ezc_list`
- *              indices is that if `n` is greater than the list length, `n`
- *              will be normalized between `0` and `length - 1` of the
- *              respective list. You can always count on these out-of-bounds
- *              indices to be consistent, i.e., if you push to index `-153` of
- *              a list of length `16`, you will always be able to find and
- *              remove that item by again looking at index `-153`.
+ *  @details    Out-of-bounds (negative) indices are this module's way of
+ *              communicating errors or otherwise not finding the item.
  *  @param      self    `ezc_list const *` Pointer to the item in question.
  *  @param      head    `ezc_list const *` Pointer to the list containing the
  *                      item `self`.
  *  @returns    `long` The index of the item, assuming it was found. Returns
- *              `-1` if the item was not found or if any other problems
- *              occured.
+ *              `-1` and pushes an `EZC_LOG_WARN` if the item was not found or
+ *              if any other problems occured.
  */
 #define ezc_list_get_index_of(self, head) \
     (ezc_list_get_index_of__((self), (head)))
@@ -194,14 +188,7 @@ long ezc_list_get_index_of__(ezc_list const *self, ezc_list const *head);
 
 
 /** @brief      Get item at index `n`.
- *  @details    List indices behave similar Python indices. Negative indices
- *              count backwards from the tail. One behavior of `ezc_list`
- *              indices is that if `n` is greater than the list length, `n`
- *              will be normalized between `0` and `length - 1` of the
- *              respective list. You can always count on these out-of-bounds
- *              indices to be consistent, i.e., if you push to index `-153` of
- *              a list of length `16`, you will always be able to find and
- *              remove that item by again looking at index `-153`.
+ *  @details    Asserts that `n` must be not out-of-bounds.
  *  @param      self    `ezc_list const *` Pointer to a list.
  *  @param      n       `long` Index you want to look at.
  *  @returns    `ezc_list *` Pointer to the item at index `n`. Returns `NULL`
@@ -252,8 +239,9 @@ ezc_list* ezc_list_get_match_fn__(ezc_list const *self,
 
 
 /** @brief      Push items to index `n`.
- *  @details    List indices behave as described in the `ezc_list_get_index_of`
- *              documentation.
+ *  @details    Asserts that `n` must be not out-of-bounds, with the exception
+ *              of `n == ezc_list_length(self)`. This case is valid and
+ *              equivalent to `ezc_list_push_back(self)`.
  *  @param      self    `ezc_list const *` Pointer to a list.
  *  @param      n       `long` Index you want the first pushed item to be at.
  *  @param      ...     `void const *` Data you want to be pushed to the list.
@@ -286,10 +274,8 @@ void ezc_list_push_at__(ezc_list *self, long n, ...);
 
 
 /** @brief      Push items to the back.
- *  @details    <i>NOT</i> equivalent to `ezc_list_push_at(self, -1, ...)`.
- *              Doing that would result in the old last item still being the
- *              last item. Instead, this is equivalent to concatenating the
- *              `self` list with a list containing `...`.
+ *  @details    Equivalent to
+ *              `ezc_list_push_at(self, ezc_list_length(self), ...)`.
  *  @param      self    `ezc_list const *` Pointer to a list.
  *  @param      ...     `void const *` Data you want to be pushed to the list.
  *                      Provide as many as you want.
@@ -298,8 +284,9 @@ void ezc_list_push_at__(ezc_list *self, long n, ...);
 #define ezc_list_push_back(self, ...) \
     do { \
         if ((self) == NULL) (self) = ezc_list_new__(__VA_ARGS__, NULL); \
-        else ezc_list_cat__((self), \
-                SST_MAP_LIST(ezc_list_new, ##__VA_ARGS__), \
+        else ezc_list_push_at__((self), \
+                ezc_list_length((self)), \
+                ##__VA_ARGS__, \
                 NULL); \
     } while (0)
 
@@ -307,8 +294,7 @@ void ezc_list_push_at__(ezc_list *self, long n, ...);
 
 
 /** @brief      Pop item at index `n`.
- *  @details    List indices behave as described in the `ezc_list_get_index_of`
- *              documentation.
+ *  @details    Asserts that `n` must be not out-of-bounds.
  *  @param      self    `ezc_list const *` Pointer to a list.
  *  @param      n       `long` The index of the item you want to be popped.
  *  @returns    `ezc_list *` Pointer to the item that got popped. Note: no
@@ -336,7 +322,7 @@ ezc_list* ezc_list_pop_at__(ezc_list **self, long n);
 
 
 /** @brief      Pop last item.
- *  @details    Equivalent to `ezc_list_pop_at(self, -1)`.
+ *  @details    Equivalent to `ezc_list_pop_at(self, ezc_list_length(self)-1)`.
  *  @param      self    `ezc_list const *` Pointer to a list.
  *  @returns    `ezc_list *` Pointer to the item that got popped. See
  *              `ezc_list_pop_at` documentation for more details.
@@ -386,9 +372,7 @@ ezc_list* ezc_list_pop_match_fn__(ezc_list const *self,
 
 
 /** @brief      Erase item at index `n`.
- *  @details    List indices behave as described in the `ezc_list_get_index_of`
- *              documentation. Equivalent to
- *              `ezc_list_delete(ezc_list_pop_at(self, n));`.
+ *  @details    Asserts that `n` must be not out-of-bounds.
  *  @param      self    `ezc_list const *` Pointer to a list.
  *  @param      n       `long` The index of the item you want to be erased.
  *  @returns    N/A
@@ -409,7 +393,8 @@ ezc_list* ezc_list_pop_match_fn__(ezc_list const *self,
 
 
 /** @brief      Erase last item.
- *  @details    Equivalent to `ezc_list_erase_at(self, -1)`.
+ *  @details    Equivalent to
+ *              `ezc_list_erase_at(self, ezc_list_length(self)-1)`.
  *  @param      self    `ezc_list const *` Pointer to a list.
  *  @returns    N/A
  */
@@ -429,8 +414,7 @@ ezc_list* ezc_list_pop_match_fn__(ezc_list const *self,
  *  @returns    N/A
  */
 #define ezc_list_erase_match(self, data) \
-    (ezc_list_delete__( \
-            ezc_list_pop_match_fn__((self), NULL, (data)), NULL))
+    (ezc_list_delete__(ezc_list_pop_match_fn__((self), NULL, (data)), NULL))
 
 
 
