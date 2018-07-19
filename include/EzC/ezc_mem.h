@@ -34,6 +34,8 @@ extern C
 
 #include "EzC/ezc_macro.h"
 
+#include <stdlib.h>
+
 
 
 /** @brief      Get the length of an array.
