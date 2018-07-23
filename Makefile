@@ -48,7 +48,7 @@ RUN =
 PKGS = #glfw3 gtk+-3.0 sdl2 SDL2_image
 
 # Needed submodule include directories within /sub
-SUB_INC_DIRS = parson
+SUB_INC_DIRS =
 
 # Needed submodule source directories within /sub
 SUB_SRC_DIRS =
@@ -56,7 +56,7 @@ SUB_SRC_DIRS =
 # If the submodule has its test source files in the same directory as its
 # actual API source files (facepalm), then you may want to manually specify
 # individual source files here (including the file extension).
-SUB_SRC_FILES = parson/parson.c
+SUB_SRC_FILES =
 
 
 
@@ -109,14 +109,6 @@ default :
 	@echo
 
 init :
-	@rm -rf $(SUB_DIR)/ezmake
-	@rm -rf .git/modules/$(SUB_DIR)/ezmake
-	@git rm -r --cached --ignore-unmatch $(SUB_DIR)/ezmake
-	git submodule add -f https://github.com/ezaf/ezmake.git $(SUB_DIR)/ezmake
-	git submodule update --remote --force
-	@rm -f script/ezmake.mk
-	@rm -f script/ezmake_open.sh
-	@mkdir -p script
-	@rmdir --ignore-fail-on-non-empty script
+	git submodule update --init --remote --force
 
 -include $(SUB_DIR)/ezmake/script/ezmake.mk
