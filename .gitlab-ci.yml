@@ -9,14 +9,9 @@ before_script:
 - apk add libc-dev
 
 # EzMake defaults to building and running all tests
-test_all:
+test:
   script:
   - make init
-  - make build MODE=static
-  - make test
-  - make clean
-  - make init
-  - make build MODE=dynamic
   - make test
   - make clean
 
