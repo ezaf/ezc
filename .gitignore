@@ -1,7 +1,9 @@
 /bin
-/build
 /docs
+/include
 /lib
 *.assert
+*.d
 *.error
+*.o
 *.swp

@@ -1,4 +1,4 @@
-/*  test_list.c
+/*  test_list/main.c
  *
  *  Copyright (c) 2018 Kirk Lange <github.com/kirklange>
  *
@@ -19,7 +19,7 @@
  *  3. This notice may not be removed or altered from any source distribution.
  */
 
-/** @file       test_list.c
+/** @file       test_list/main.c
  *  @brief      Lorem ipsum
  *  @details    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
  */
