@@ -32,7 +32,7 @@ extern C
 {
 #endif
 
-#include "EzC/ezc_macro.h"
+#include "ezc/ezc_macro.h"
 
 #include <stdlib.h>
 

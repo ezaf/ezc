@@ -24,8 +24,8 @@
  *  @details    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
  */
 
-#include "EzC/ezc_callback.h"
-#include "EzC/ezc_list.h"
+#include "ezc/ezc_callback.h"
+#include "ezc/ezc_list.h"
 #include <math.h>
 #include <stdio.h>
 

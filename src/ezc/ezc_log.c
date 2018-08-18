@@ -19,10 +19,10 @@
  *  3. This notice may not be removed or altered from any source distribution.
  */
 
-#include "EzC/ezc_log.h"
+#include "ezc/ezc_log.h"
 
-#include "EzC/ezc_list.h"
-#include "EzC/ezc_mem.h"
+#include "ezc/ezc_list.h"
+#include "ezc/ezc_mem.h"
 #include <limits.h>
 #include <stdarg.h>
 #include <stdio.h>

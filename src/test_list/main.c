@@ -24,8 +24,8 @@
  *  @details    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
  */
 
-#include "EzC/ezc_list.h"
-#include "EzC/ezc_mem.h"
+#include "ezc/ezc_list.h"
+#include "ezc/ezc_mem.h"
 #include <stdio.h>
 #include <string.h>
 

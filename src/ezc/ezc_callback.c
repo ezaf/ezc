@@ -1,4 +1,4 @@
-/*  ezc_assert.c
+/*  ezc_callback.c
  *
  *  Copyright (c) 2018 Kirk Lange <github.com/kirklange>
  *
@@ -19,39 +19,49 @@
  *  3. This notice may not be removed or altered from any source distribution.
  */
 
-#include "EzC/ezc_assert.h"
-#include "EzC/ezc_mem.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include "ezc/ezc_callback.h"
+#include "ezc/ezc_log.h"
+#include "ezc/ezc_mem.h"
 
 
 
-void ezc_assert(char const *file, unsigned int line, char const *expr)
+typedef struct ezc_callback
 {
-    time_t rawtime;
-    struct tm *infotime;
+    void (*fn)(void*);
+    void *arg;
+}
+ezc_callback;
 
-    time(&rawtime);
-    infotime = localtime(&rawtime);
 
-    char name[27], message[2048];
-    strftime(name, EZC_LENGTH(name), "%Y-%m-%d-%H-%M-%S.assert", infotime);
-    snprintf(message, EZC_LENGTH(message),
-            "EzC assertion failed!\n"
-            "%s:%u\n"
-            "%s\n", file, line, expr);
 
-    FILE *out = fopen(name, "w");
+ezc_callback* ezc_callback_new(void (*fn)(void*), void *arg)
+{
+    ezc_callback *self;
+    EZC_NEW(self);
 
-    if (out != NULL)
+    self->fn = fn;
+    self->arg = arg;
+
+    return self;
+}
+
+
+
+void ezc_callback_delete(ezc_callback *self)
+{
+    EZC_FREE(self);
+}
+
+
+
+void ezc_callback_call(ezc_callback const *self)
+{
+    if (self != NULL)
     {
-        fprintf(out, message);
-        fclose(out);
+        (*self->fn)(self->arg);
     }
-
-    fprintf(stderr, message);
-
-    abort();
+    else
+    {
+        ezc_log(EZC_LOG_WARN, "Attempting to use uninitialized callback.");
+    }
 }

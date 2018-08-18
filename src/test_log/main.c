@@ -24,7 +24,7 @@
  *  @details    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
  */
 
-#include "EzC/ezc_log.h"
+#include "ezc/ezc_log.h"
 
 
 
