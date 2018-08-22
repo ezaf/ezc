@@ -9,19 +9,6 @@ Design patterns and data structures implemented in straight C.
 
 <hr>
 
-## Links
-
-Some helpful links if you want to use and/or contribute to the project!
-
-Resource | URL
---- | ---
-Documentation | [ezc.ezaf.io](http://ezc.ezaf.io)
-GitHub | [github.com/ezaf/ezc](https://github.com/ezaf/ezc)
-Issues | [github.com/ezaf/ezc/issues](https://github.com/ezaf/ezc/issues)
-Build Status | [travis-ci.org/ezaf/ezc](https://travis-ci.org/ezaf/ezc)
-
-<hr>
-
 ## License
 
 Copyright (c) 2018 Kirk Lange <[github.com/kirklange](https://github.com/kirklange)>
